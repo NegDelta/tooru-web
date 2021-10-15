@@ -1,6 +1,7 @@
 # tooru
 A booru, except for text.
-## Todos:
+
+## Todos
 - Admin view
     - Bring over ejsdemo code
     - Define rules for integrity
@@ -9,3 +10,8 @@ A booru, except for text.
     - single page
     - editor
         - MVP: form with textarea, page selector augmented with "\[New Page\]"
+
+## Lore
+The building block of a tooru stash is a *page*, with defined name, lead, and body. The page can be either plaintext or Markdown. (HTML was a mistake.)
+
+A page can have *tags*.
