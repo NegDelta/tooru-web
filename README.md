@@ -56,3 +56,4 @@ In terms of danbooru-style tags (features vs IP's vs authors vs charas), this do
 ### Page relations
 One page can be a precedessor, successor, parent or child of another.
 
+Consider the use-case of a CYOA serial. A page can have a precedessor, multiple non-unique successors, with one of them duplicated as the canonical successor, and potentially a parent page, common to all story pages.
