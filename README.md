@@ -9,7 +9,6 @@ A booru, except for text.
     - connection details
     - schema details for integrity check
 - mariadb
-    - install 
     - connection boilerplate
 - integrity check 📦
     - connection check
