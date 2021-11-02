@@ -6,19 +6,19 @@ router.get('/', function(req, res, next) {
   res.render('adminindex');
 });
 
-router.get('/timetoid', function(req, res, next) {
-  //res.render('adminindex');
-  dupecount = 0;
-  timeint = Date.now().valueOf();
-  combinationmap = [1,3,7,9];
-  hashdig = 0
-  timestr_nosuffix = timeint.toString()
+function timetoid(timeint, dupecount) {
+  timestr_nosuffix = timeint.toString();
   timestr_dupes = timestr_nosuffix + dupecount.toString();
   timestr_dupes_exploded = timestr_dupes.toString().split('')
+
+  // compute hash digit
+  const combinationmap = [1,3,7,9];
+  hashdig = 0
   timestr_dupes_exploded.forEach((inum, iindex) => {
     hashdig += Number(inum) * combinationmap[iindex % 4];
   });
   hashdig %= 10;
+
   idint = timeint * 10 + hashdig
   timestr_hash = idint.toString()
   triplets = []
@@ -34,7 +34,7 @@ router.get('/timetoid', function(req, res, next) {
   }*/
   idstring=triplets.join('-');
 
-  res.json({
+  return({
     input: {
       time: timeint,
       dupecount: dupecount,
@@ -48,6 +48,11 @@ router.get('/timetoid', function(req, res, next) {
       string: idstring
     }
   });
+}
+
+router.get('/timetoid', function(req, res, next) {
+  ids = timetoid(Date.now().valueOf(), 0)
+  res.json(ids);    
 });
 
 module.exports = router;
