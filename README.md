@@ -9,10 +9,9 @@ A booru, except for text.
     - connection details
     - schema details for integrity check
 - sort out router/view structure
-- mariadb
-    - connection boilerplate
-    - update id part to check for dupes
-        - `SELECT COUNT(1) FROM pages WHERE time={timestr_nosuffix};`
+- add page
+    - `SELECT COUNT(1) AS dupes FROM pages WHERE time=?;`
+    - `"INSERT INTO pages VALUE (?, ?, ?, ?, ?)", [id, time, title, lead, body]`
 - integrity check 📦
     - connection check
     - db check
@@ -46,6 +45,21 @@ A booru, except for text.
     - pageid_from (Pages FK)
     - relation_type (PageRelationType FK)
     - pageid_to (Pages FK)
+```
+CREATE TABLE pages (
+    id VARCHAR(17) NOT NULL PRIMARY KEY,
+    time VARCHAR(13) NOT NULL,
+    title VARCHAR(80),
+    lead VARCHAR(280),
+    body TEXT
+);
+CREATE TABLE taggings (
+    tag VARCHAR(80) NOT NULL,
+    pageid VARCHAR(17) NOT NULL,
+    PRIMARY KEY(tag, pageid),
+    FOREIGN KEY (pageid) REFERENCES pages(id)
+);
+```
 
 ### Pages
 The building block of a tooru stash is a *page*, with defined name, lead, and body. The page can be either plaintext or Markdown. (HTML was a mistake.)

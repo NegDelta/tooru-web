@@ -52,21 +52,16 @@ function setupRouter(mdb_pool) {
 
   router.get('/timetoid/:dupes/', function(req, res, next) {
     ids = timetoid(Date.now().valueOf(), Number(req.params.dupes))
-    res.json(ids);    
+    res.json(ids.output);    
   });
 
   router.get('/allpages/', function(req, res, next) {
     mdb_pool.getConnection()
     .then(conn => {
-      conn.query("SELECT 1 as val")
+      timeint = Date.now().valueOf();
+      conn.query("SELECT * FROM pages;")
         .then((rows) => {
-          /*console.log(rows); //[ {val: 1}, meta: ... ]
-          //Table must have been created before 
-          // " CREATE TABLE myTable (id int, val varchar(255)) "
-          return conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
-        })
-        .then((pr_res) => {*/
-          res.json(rows); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
+          res.json(rows);
           conn.end();
         })
         .catch(err => {
@@ -76,9 +71,13 @@ function setupRouter(mdb_pool) {
         })
     }).catch(err => {
       //not connected
+      console.log("Not connected.");
       res.send("Not connected.")
     });
-    
+  });
+
+  router.post('/dummy/', function(req, res, next) {
+    res.json(req);
   });
 
   return router;
