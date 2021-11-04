@@ -4,18 +4,20 @@
   --white: #cccccc;
   --bkshade: #191919;
   --whshade: #999999;
-  --accenta: #00a486;
+  --accenta: #00725d;
   --accentb: #c93362;
-  --aashade: #0f6555;
+  --aashade: #0b443a;
   --abshade: #852b48;
 }
 
 body {
   padding: 50px;
   padding-top: 5px;
-  font: 14px "Lucida Grande", "Segoe UI", Helvetica, sans-serif;
   background-color: var(--bgblack);
   color: var(--white);
+}
+body, textarea {
+    font: 14px "Lucida Grande", "Segoe UI", Helvetica, sans-serif;
 }
 
 .hilit {
@@ -59,7 +61,6 @@ a {
 #pagemenu ul {
   margin: 0;
   padding-left: 20px;
-  /*display: inline-block;  */
   border-bottom: 1px var(--white) solid;
 }
 
@@ -74,4 +75,45 @@ a {
 }
 #pagemenu li:hover {
   background-color: var(--black);
+}
+
+textarea {
+  background-color: var(--black);
+  color: var(--white);
+  border: 0px;
+  border-radius: 5px;
+  border-left: var(--bkshade) 2px solid;
+}
+textarea:focus {
+  outline: 0;
+}
+
+button {
+  background: var(--accenta);
+  color: white;
+  text-shadow: 0 1px 0 var(--bgblack);
+  border: 0px;
+  border-radius: 5px;
+  border-bottom: var(--aashade) 2px solid;
+}
+button:active {
+  border-top: var(--black) 2px solid;
+  border-bottom: 0;
+  background-color: var(--aashade);
+}
+
+form#newpage label {
+  display: block;
+  width: 100px;
+}
+form#newpage textarea {
+  width: 600px;
+  resize: none;
+}
+form#newpage #title { height: 20px }
+form#newpage #lead { height: 40px }
+form#newpage #body { height: 200px }
+form#newpage #submit {
+  width: 60px;
+  height: 30px;
 }

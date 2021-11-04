@@ -2,11 +2,15 @@ extends layout
 block variables
   - var title = 'new page'
 block content
-    form(action="/api/dummy/" method="POST"): ul
-        li: label(for="title") Title: 
-        li: input(type="text", id="title", name="title")
-        li: label(for="lead") Lead (optional): 
-        li: input(type="text", id="lead", name="lead")
-        li: label(for="body") Page content: 
-        li: input(type="text", id="body", name="body")
-        li: input(type="submit", value="Post")
+    form(action="/api/dummy/", method="POST")#newpage
+        p
+            label(for="title") Title:
+            textarea(id="title", name="title", maxlength="80")
+        p 
+            label(for="lead") Lead:
+            textarea(id="lead", name="lead", maxlength="280")
+        p 
+            label(for="body") Page content: 
+            textarea(id="body", name="body")
+        p 
+            button(type="submit", id="submit") Post
