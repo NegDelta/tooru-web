@@ -16,7 +16,6 @@ router.get('/admin/', function(req, res, next) {
     title: 'admin',
     cfgjson: JSON.stringify(cfg)
   })
-  res.json(cfg);
 });
 
 module.exports = router;
