@@ -1,8 +1,77 @@
+:root {
+  --bgblack: #333333;
+  --black: #222222;
+  --white: #cccccc;
+  --bkshade: #191919;
+  --whshade: #999999;
+  --accenta: #00a486;
+  --accentb: #c93362;
+  --aashade: #0f6555;
+  --abshade: #852b48;
+}
+
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding-top: 5px;
+  font: 14px "Lucida Grande", "Segoe UI", Helvetica, sans-serif;
+  background-color: var(--bgblack);
+  color: var(--white);
+}
+
+.hilit {
+  background-color: #494949;
 }
 
 a {
-  color: #00B7FF;
+  color: var(--accenta);
+}
+
+#header {
+  height: 50px;
+  margin-bottom: 15px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px var(--white) solid;
+  padding-bottom: 15px;
+}
+
+#pageicon {
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  margin: 0 5px -1px;
+  padding: 0;
+}
+
+#pagetitle {
+  position: absolute;
+  left: 60px;
+  top: 25px;
+  font-size: 20px;
+}
+
+#pagemenu {
+  position: absolute;
+  left: 66px;
+  top: 0;
+}
+
+#pagemenu ul {
+  margin: 0;
+  padding-left: 20px;
+  /*display: inline-block;  */
+  border-bottom: 1px var(--white) solid;
+}
+
+#pagemenu li {
+  display: inline;
+  margin-right: 20px;
+}
+
+#pagemenu a {
+  color: var(--white);
+  text-decoration: none;
+}
+#pagemenu li:hover {
+  background-color: var(--black);
 }

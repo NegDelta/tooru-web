@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    form(action="/admin/dummy/" method="POST"): ul
+        li: label(for="title") Title: 
+        li: input(type="text", id="title", name="title")
+        li: label(for="lead") Lead (optional): 
+        li: input(type="text", id="lead", name="lead")
+        li: label(for="body") Page content: 
+        li: input(type="text", id="body", name="body")
+        li: input(type="submit", value="Post")
