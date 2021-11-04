@@ -46,16 +46,6 @@ function setupRouter(mdb_pool) {
   var express = require('express');
   var router = express.Router();
   
-  router.get('/', function(req, res, next) {
-    cfg = require('../config.js');
-    res.render('adminindex', {
-      title: 'admin',
-      cfgjson: JSON.stringify(cfg)
-    })
-    res.json(cfg);
-  });
-
-  // All endpoints below to be moved to /api/
   router.get('/timetoid/', function(req, res, next) {
     res.redirect('0');    
   });
