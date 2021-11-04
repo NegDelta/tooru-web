@@ -4,16 +4,15 @@ function setupRouter(appglobals) {
   
   /* GET home page. */
   router.get('/', function(req, res, next) {
-    res.render('allpages', {title: "all pages"});
+    res.render('allpages');
   });
   
   router.get('/newpage/', function(req, res, next) {
-    res.render('newpage', {title: "new page"});
+    res.render('newpage');
   });
   
   router.get('/admin/', function(req, res, next) {
     res.render('adminindex', {
-      title: 'admin',
       cfgjson: JSON.stringify(appglobals.cfg)
     })
   });
