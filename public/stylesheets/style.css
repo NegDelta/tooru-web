@@ -11,8 +11,6 @@
 }
 
 body {
-  padding: 50px;
-  padding-top: 5px;
   background-color: var(--bgblack);
   color: var(--white);
 }
@@ -26,6 +24,11 @@ body, textarea {
 
 a {
   color: var(--accenta);
+}
+
+#wrapper {
+  width: 1000px;
+  margin: 15px auto 0;
 }
 
 #header {
@@ -60,13 +63,13 @@ a {
 
 #pagemenu ul {
   margin: 0;
-  padding-left: 20px;
+  padding: 0 10px;
   border-bottom: 1px var(--white) solid;
 }
 
 #pagemenu li {
   display: inline;
-  margin-right: 20px;
+  padding: 0 10px;
 }
 
 #pagemenu a {
@@ -107,7 +110,7 @@ form#newpage label {
   width: 100px;
 }
 form#newpage textarea {
-  width: 600px;
+  width: 995px;
   resize: none;
 }
 form#newpage #title { height: 20px }
@@ -116,4 +119,5 @@ form#newpage #body { height: 200px }
 form#newpage #submit {
   width: 60px;
   height: 30px;
+  float: right;
 }
