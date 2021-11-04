@@ -6,9 +6,7 @@ A booru, except for text.
 
 ### Backend
 - config file 📦
-    - connection details
     - schema details for integrity check
-- sort out router/view structure
 - add page
     - `SELECT COUNT(1) AS dupes FROM pages WHERE time=?;`
     - `"INSERT INTO pages VALUE (?, ?, ?, ?, ?)", [id, time, title, lead, body]`
@@ -23,9 +21,9 @@ A booru, except for text.
     - integrity check results
 - User view
     - all pages overview
+        - include tags
     - single page
     - editor 📦 *Quill.js*
-        - MVP: form with textarea, page selector augmented with "\[New Page\]"
 
 ## Schema
 

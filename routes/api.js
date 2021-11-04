@@ -58,7 +58,6 @@ function setupRouter(appglobals) {
   router.get('/allpages/', function(req, res, next) {
     appglobals.mdb_pool.getConnection()
     .then(conn => {
-      timeint = Date.now().valueOf();
       conn.query("SELECT * FROM pages;")
         .then((rows) => {
           res.json(rows);
@@ -78,6 +77,35 @@ function setupRouter(appglobals) {
 
   router.post('/dummy/', function(req, res, next) {
     res.json(req.body);
+  });
+
+  router.post('/addpage/', function(req, res, next) {
+    appglobals.mdb_pool.getConnection()
+    .then(conn => {
+      timeint = Date.now().valueOf();
+      conn.query("SELECT COUNT(1) AS dupes FROM pages WHERE time=?;", timeint)
+      .then((rows) => {
+        res.json(rows);
+        ids = timetoid(Date.now().valueOf(), Number(rows[0].dupes))
+        return conn.query("INSERT INTO pages VALUE (?, ?, ?, ?, ?)", [
+          ids.output.string,
+          timeint,
+          req.body.title,
+          req.body.lead,
+          req.body.body
+        ]);
+      }).then((res) => {
+        console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
+        conn.end();
+      }).catch(err => { // queries error
+        //handle error
+        console.log(err); 
+        conn.end();
+      })
+    }).catch(err => { // connection error
+      console.log("Not connected.");
+      res.send("Not connected.")
+    });
   });
 
   return router;
