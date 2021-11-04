@@ -42,7 +42,7 @@ function timetoid(timeint, dupecount) {
   });
 }
 
-function setupRouter(mdb_pool) {
+function setupRouter(appglobals) {
   var express = require('express');
   var router = express.Router();
   
@@ -56,7 +56,7 @@ function setupRouter(mdb_pool) {
   });
 
   router.get('/allpages/', function(req, res, next) {
-    mdb_pool.getConnection()
+    appglobals.mdb_pool.getConnection()
     .then(conn => {
       timeint = Date.now().valueOf();
       conn.query("SELECT * FROM pages;")
@@ -77,7 +77,7 @@ function setupRouter(mdb_pool) {
   });
 
   router.post('/dummy/', function(req, res, next) {
-    res.json(req);
+    res.json(req.body);
   });
 
   return router;
