@@ -46,6 +46,11 @@ function setupRouter(mdb_pool) {
   var express = require('express');
   var router = express.Router();
   
+  router.get('/', function(req, res, next) {
+    cfg = require('../config.js');
+    res.json(cfg);
+  });
+
   router.get('/timetoid/', function(req, res, next) {
     res.redirect('0');    
   });
