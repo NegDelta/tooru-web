@@ -5,17 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mariadb = require('mariadb');
 
+const cfg = require('./config')
+mdb_pool = mariadb.createPool(cfg.dbpool);
 
 const appglobals = {
-   mdb_pool: mariadb.createPool({
-   host: '', // to be filled
-   user: '', 
-   password: '',
-   connectionLimit: 5,
-   database: 'toorudev',
-   connectTimeout: 4000,
-  }),
-  cfg: require('./config')
+  mdb_pool: mdb_pool,
+  url_root: cfg.url_root
 };
 
 var indexRouter = require('./routes/index')(appglobals);
