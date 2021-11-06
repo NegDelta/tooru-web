@@ -1,7 +1,18 @@
+block variables
 doctype html
 html
   head
-    title= title
+    title tooru / #{title}
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body
+  body: div#wrapper
+    div#header
+      a(href='/'): img(src='/images/toorubox.png', height=50)
+      div#pagetitle
+        div#pageicon
+        | #{title}
+      div#pagemenu
+        ul
+          li: a(href='/') all pages
+          li: a(href='/newpage/') new page
+          li: a(href='/admin/') admin
     block content

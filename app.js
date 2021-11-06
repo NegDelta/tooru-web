@@ -3,9 +3,18 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mariadb = require('mariadb');
 
-var indexRouter = require('./routes/index');
-var adminRouter = require('./routes/admin');
+const cfg = require('./config')
+mdb_pool = mariadb.createPool(cfg.dbpool);
+
+const appglobals = {
+  mdb_pool: mdb_pool,
+  url_root: cfg.url_root
+};
+
+var indexRouter = require('./routes/index')(appglobals);
+var apiRouter = require('./routes/api')(appglobals);
 
 var app = express();
 
@@ -20,7 +29,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/admin', adminRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
