@@ -3,9 +3,19 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mariadb = require('mariadb');
+
+const mdb_pool = mariadb.createPool({
+  host: '', // to be filled
+  user: '', 
+  password: '',
+  connectionLimit: 5,
+  database: 'toorudev',
+  connectTimeout: 4000,
+});
 
 var indexRouter = require('./routes/index');
-var adminRouter = require('./routes/admin');
+var adminRouter = require('./routes/admin')(mdb_pool);
 
 var app = express();
 

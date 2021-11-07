@@ -1,11 +1,3 @@
-var express = require('express');
-var router = express.Router();
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.render('adminindex');
-});
-
 function timetoid(timeint, dupecount) {
   timestr_nosuffix = timeint.toString();
   timestr_dupes = timestr_nosuffix + dupecount.toString();
@@ -50,9 +42,46 @@ function timetoid(timeint, dupecount) {
   });
 }
 
-router.get('/timetoid', function(req, res, next) {
-  ids = timetoid(Date.now().valueOf(), 0)
-  res.json(ids);    
-});
+function setupRouter(mdb_pool) {
+  var express = require('express');
+  var router = express.Router();
+  
+  router.get('/timetoid/', function(req, res, next) {
+    res.redirect('0');    
+  });
 
-module.exports = router;
+  router.get('/timetoid/:dupes/', function(req, res, next) {
+    ids = timetoid(Date.now().valueOf(), Number(req.params.dupes))
+    res.json(ids);    
+  });
+
+  router.get('/allpages/', function(req, res, next) {
+    mdb_pool.getConnection()
+    .then(conn => {
+      conn.query("SELECT 1 as val")
+        .then((rows) => {
+          /*console.log(rows); //[ {val: 1}, meta: ... ]
+          //Table must have been created before 
+          // " CREATE TABLE myTable (id int, val varchar(255)) "
+          return conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
+        })
+        .then((pr_res) => {*/
+          res.json(rows); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
+          conn.end();
+        })
+        .catch(err => {
+          //handle error
+          console.log(err); 
+          conn.end();
+        })
+    }).catch(err => {
+      //not connected
+      res.send("Not connected.")
+    });
+    
+  });
+
+  return router;
+}
+
+module.exports = setupRouter;
