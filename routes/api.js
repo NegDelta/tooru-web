@@ -56,7 +56,7 @@ function setupRouter(appglobals) {
   });
 
   router.get('/allpages/', function(req, res, next) {
-    appglobals.db_pool.getConnection()
+    appglobals.mdb_pool.getConnection()
     .then(conn => {
       conn.query("SELECT * FROM pages;")
         .then((rows) => {
@@ -80,7 +80,7 @@ function setupRouter(appglobals) {
   });
 
   router.post('/addpage/', function(req, res, next) {
-    appglobals.db_pool.getConnection()
+    appglobals.mdb_pool.getConnection()
     .then(conn => {
       timeint = Date.now().valueOf();
       conn.query("SELECT COUNT(1) AS dupes FROM pages WHERE time=?;", timeint)

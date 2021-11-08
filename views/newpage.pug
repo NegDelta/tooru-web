@@ -2,7 +2,7 @@ extends layout
 block variables
   - var title = 'new page'
 block content
-    form(action="/api/addpage/", method="POST")#newpage
+    form(action="api/addpage/", method="POST")#newpage
         p
             label(for="title") Title:
             textarea(id="title", name="title", maxlength="80")
