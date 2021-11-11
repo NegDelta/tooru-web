@@ -4,7 +4,15 @@ function setupRouter(logic_globals) {
   
   /* GET home page. */
   router.get('/', function(req, res, next) {
-    res.render('allpages');
+    // all pages
+    logic_globals.prom_get_all_pages()
+    .then((rows) => {
+      res.render('allpages', { pages: rows });
+    })
+    .catch(err => {
+      //handle error
+      console.log(err); 
+    })
   });
   
   router.get('/newpage/', function(req, res, next) {
