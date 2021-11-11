@@ -1,4 +1,4 @@
-function setupRouter(appglobals) {
+function setupRouter(logic_globals) {
   var express = require('express');
   var router = express.Router();
   
@@ -13,7 +13,7 @@ function setupRouter(appglobals) {
   
   router.get('/admin/', function(req, res, next) {
     res.render('adminindex', {
-      cfgjson: JSON.stringify(appglobals.cfg)
+      cfgjson: JSON.stringify(logic_globals.cfg)
     })
   });
 

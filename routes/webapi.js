@@ -1,3 +1,4 @@
+/*
 function timetoid(timeint, dupecount) {
   timestr_nosuffix = timeint.toString();
   timestr_dupes = timestr_nosuffix + dupecount.toString();
@@ -19,11 +20,7 @@ function timetoid(timeint, dupecount) {
   triplets.push(timestr_hash.slice(-6, -3));
   triplets.push(timestr_hash.slice(-9, -6));
   triplets.push(timestr_hash.slice(undefined, -9));
-/*
-  for (beginindex = len-2; beginindex > 0 && beginindex; beginindex-=3) {
-    beginindex = i<3 ? undefined : i-3;
-    triplets.push(timestr_hash.slice(beginindex, i));
-  }*/
+
   idstring=triplets.join('-');
 
   return({
@@ -41,8 +38,9 @@ function timetoid(timeint, dupecount) {
     }
   });
 }
+*/
 
-function setupRouter(appglobals) {
+function setupRouter(logic_globals) {
   var express = require('express');
   var router = express.Router();
   
@@ -51,28 +49,19 @@ function setupRouter(appglobals) {
   });
 
   router.get('/timetoid/:dupes/', function(req, res, next) {
-    ids = timetoid(Date.now().valueOf(), Number(req.params.dupes))
+    ids = logic_globals.timetoid(Date.now().valueOf(), Number(req.params.dupes))
     res.json(ids.output);    
   });
 
   router.get('/allpages/', function(req, res, next) {
-    appglobals.mdb_pool.getConnection()
-    .then(conn => {
-      conn.query("SELECT * FROM pages;")
-        .then((rows) => {
-          res.json(rows);
-          conn.end();
-        })
-        .catch(err => {
-          //handle error
-          console.log(err); 
-          conn.end();
-        })
-    }).catch(err => {
-      //not connected
-      console.log("Not connected.");
-      res.send("Not connected.")
-    });
+    logic_globals.prom_get_all_pages()
+    .then((rows) => {
+      res.json(rows);
+    })
+    .catch(err => {
+      //handle error
+      console.log(err); 
+    })
   });
 
   router.post('/dummy/', function(req, res, next) {
@@ -80,13 +69,13 @@ function setupRouter(appglobals) {
   });
 
   router.post('/addpage/', function(req, res, next) {
-    appglobals.mdb_pool.getConnection()
+    logic_globals.mdb_pool.getConnection()
     .then(conn => {
       timeint = Date.now().valueOf();
       conn.query("SELECT COUNT(1) AS dupes FROM pages WHERE time=?;", timeint)
       .then((rows) => {
         res.json(rows);
-        ids = timetoid(Date.now().valueOf(), Number(rows[0].dupes))
+        ids = logic_globals.timetoid(Date.now().valueOf(), Number(rows[0].dupes))
         return conn.query("INSERT INTO pages VALUE (?, ?, ?, ?, ?)", [
           ids.output.string,
           timeint,
