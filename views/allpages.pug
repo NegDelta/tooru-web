@@ -2,8 +2,11 @@ extends layout
 block variables
   - var title = 'all pages'
 block content
-  each page in pages
-    div.pagestub
-      h1= page.title 
-      p.lead= page.lead 
-      p= page.body
+  if pages
+    each page in pages
+      div.pagestub
+        h1= page.title 
+        p.lead= page.lead 
+        p= page.body
+  else
+    p No content
