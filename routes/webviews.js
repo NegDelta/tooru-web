@@ -7,6 +7,10 @@ function setupRouter(logic_globals) {
     // all pages
     logic_globals.prom_dbConnection(res, logic_globals.prom_getAllPages(res));
   });
+
+  router.get('/pages/:id/', function(req, res, next) {
+    logic_globals.prom_dbConnection(res, logic_globals.prom_getPage(res, req.params.id));
+  });
   
   router.get('/newpage/', function(req, res, next) {
     res.render('newpage');

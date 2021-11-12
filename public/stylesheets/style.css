@@ -72,7 +72,7 @@ a {
   padding: 0 10px;
 }
 
-#pagemenu a {
+#pagemenu a, h1 a {
   color: var(--white);
   text-decoration: none;
 }
@@ -128,13 +128,24 @@ form#newpage #submit {
   border: 0;
   outline: 0;
   padding: 5px 10px 10px;
-  margin: 5px auto;  
-  /*color: #888;*/
+  margin: 5px auto;
   font-family: "Segoe UI"
 }
 .pagestub p, .pagestub h1 {
   margin: 0 auto;
 }
-.pagestub p.lead {
+p.lead {
   font-style: italic;
+}
+.pagestub h1 a:hover {
+  /*color: white;*/
+  text-decoration: underline;
+}
+.pageid {
+  font-size: small;
+  color: #888;
+  margin-top: 0;
+}
+h1 {
+  margin-bottom: 0.3em;
 }

@@ -94,6 +94,15 @@ const appglobals = {
       })
   },
 
+  prom_getPage(httpres, pageid) {
+    return (dbconn) => 
+      dbconn.query("SELECT * FROM pages WHERE id=?;", pageid)
+      .then((dbres) => {
+        httpres.render('onepage', { page: dbres[0] });
+        return dbconn;
+      });
+  },
+
   prom_getAllPages: function (httpres) {
     return (dbconn) => 
       dbconn.query("SELECT * FROM pages;")
