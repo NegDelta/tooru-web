@@ -43,39 +43,40 @@ function timetoid(timeint, dupecount) {
   });
 }
 
+function prom_dbConnection (httpres, conn_prom) {
+  // conn_prom must take connection and resolve returning connection
+  var prom_report_success = (conn) => {
+    console.log("Connected to database, connection id is " + conn.threadId);
+    return conn
+  };
+  
+  var handle_connection = (conn) =>
+    conn_prom(conn)
+    .then(() => {
+      console.log("Ending connection " + conn.threadId);
+      conn.end();
+    })
+    .catch(err => {
+      console.log(err); 
+      conn.end();
+    });
+
+  return mdb_pool.getConnection()
+  .then(prom_report_success)
+  .then(handle_connection)
+  .catch(err => {
+    httpres.send("Cannot connect to database") // TODO: render
+  });
+}
+
 const appglobals = {
   mdb_pool: mdb_pool,
   cfg: cfg,
 
   timetoid: timetoid,
 
-  prom_dbConnection: function (httpres, conn_prom) {
-    // conn_prom must take connection and resolve returning connection
-    var prom_report_success = (conn) => {
-      console.log("Connected to database, connection id is " + conn.threadId);
-      return conn
-    };
-    
-    return mdb_pool.getConnection()
-    .then(prom_report_success)
-    .then(conn => {
-      conn_prom(conn)
-      .then(() => {
-        console.log("Ending connection " + conn.threadId);
-        conn.end();
-      })
-      .catch(err => {
-        console.log(err); 
-        conn.end();
-      })
-    })
-    .catch(err => {
-      httpres.send("Cannot connect to database") // TODO: render
-    });
-  },
-
-  prom_postPage: function (httpres, timeint, reqparams) {
-    return (dbconn) => 
+  prom_postPage: function (httpres, timeint, reqparams, dbres_cb) {
+    return prom_dbConnection(httpres, dbconn => 
       dbconn.query("SELECT COUNT(1) AS dupes FROM pages WHERE time=?;", timeint)
       .then((dbres) => {
         ids = timetoid(timeint, Number(dbres[0].dupes));
@@ -87,29 +88,22 @@ const appglobals = {
           reqparams.body
         ]);
       })
-      .then((dbres) => {
-        console.log(dbres); // affectedRows, insertId, warningStatus
-        httpres.redirect('/');
-        return dbconn;
-      })
+      .then(dbres_cb)
+    );
   },
 
-  prom_getPage(httpres, pageid) {
-    return (dbconn) => 
+  prom_getPage: function (httpres, pageid, dbres_cb) {
+    return prom_dbConnection(httpres, dbconn => 
       dbconn.query("SELECT * FROM pages WHERE id=?;", pageid)
-      .then((dbres) => {
-        httpres.render('onepage', { page: dbres[0] });
-        return dbconn;
-      });
+      .then(dbres_cb)
+    );
   },
 
-  prom_getAllPages: function (httpres) {
-    return (dbconn) => 
+  prom_getAllPages: function (httpres, dbres_cb) {
+    return prom_dbConnection(httpres, dbconn => 
       dbconn.query("SELECT * FROM pages;")
-      .then((dbres) => {
-        httpres.render('allpages', { pages: dbres });
-        return dbconn;
-      });
+      .then(dbres_cb)
+    );
   }
 }
 module.exports = appglobals

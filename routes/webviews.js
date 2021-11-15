@@ -5,11 +5,15 @@ function setupRouter(logic_globals) {
   /* GET home page. */
   router.get('/', function(req, res, next) {
     // all pages
-    logic_globals.prom_dbConnection(res, logic_globals.prom_getAllPages(res));
+    logic_globals.prom_getAllPages(res, (dbres) => {
+      res.render('allpages', { pages: dbres });
+    });
   });
 
   router.get('/pages/:id/', function(req, res, next) {
-    logic_globals.prom_dbConnection(res, logic_globals.prom_getPage(res, req.params.id));
+    logic_globals.prom_getPage(res, req.params.id, (dbres) => {
+      res.render('onepage', { page: dbres[0] });
+    });
   });
   
   router.get('/newpage/', function(req, res, next) {

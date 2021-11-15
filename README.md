@@ -72,13 +72,17 @@ CREATE TABLE taggings (
 
 ### Special pages
 Rather special cases than MediaWiki-style special. That's because the latter would likely quickly turn out to be a security nightmare.
+
 - Tracked pages
-    - When editing or deleting a tracked page, its previous version is saved as a snapshot. The snapshot, as a special page, is not editable. The relevant details can be made visible in a pagetype-specific metadata section.
+    - When editing or deleting a tracked page, its previous version is saved as a snapshot. The snapshot itself is not editable. The relevant details can be made visible in a pagetype-specific metadata section.
 - Serials
     - One page can be a precedessor, successor, parent or child of another.
     - Consider the use-case of a CYOA serial. A page can have a precedessor, multiple non-unique successors, with one of them duplicated as the canonical successor, and potentially a parent page, common to all story pages.
 
 ### Others
+- Validate input to disallow (or at least prompt for confirmation) completely empty pages
+- Sort and filter pages
+    - ✨ by time, by default
 - ✨ Use the `nconf` or `config` package to verify existence and structure of the config file
     - Report any problems in console
 - ✨ Check database for specified tables and columns 

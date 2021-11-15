@@ -12,14 +12,9 @@ function setupRouter(logic_globals) {
   });
 
   router.get('/allpages/', function(req, res, next) {
-    logic_globals.prom_getAllPages(res)
-    .then((rows) => {
-      res.json(rows);
-    })
-    .catch(err => {
-      //handle error
-      console.log(err); 
-    })
+    logic_globals.prom_getAllPages(res, (dbres) => {
+      res.json(dbres);
+    });
   });
 
   router.post('/dummy/', function(req, res, next) {
@@ -28,7 +23,10 @@ function setupRouter(logic_globals) {
 
   router.post('/addpage/', function(req, res, next) {
     timeint = Date.now().valueOf();
-    logic_globals.prom_dbConnection(res, logic_globals.prom_postPage(res, timeint, req.body));
+    logic_globals.prom_postPage(res, timeint, req.body, (dbres) => {
+      console.log(dbres); // affectedRows, insertId, warningStatus
+      res.redirect('/');
+    });
   });
 
   return router;
