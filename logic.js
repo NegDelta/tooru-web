@@ -80,7 +80,7 @@ const appglobals = {
       dbconn.query("SELECT COUNT(1) AS dupes FROM pages WHERE time=?;", timeint)
       .then((dbres) => {
         ids = timetoid(timeint, Number(dbres[0].dupes));
-        return dbconn.query("INSERT INTO pages VALUE (?, ?, ?, ?, ?)", [
+        return dbconn.query("INSERT INTO pages VALUES (?, ?, ?, ?, ?) RETURNING id", [
           ids.output.string,
           timeint,
           reqparams.title,

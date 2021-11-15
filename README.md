@@ -1,5 +1,5 @@
 # tooru
-A booru, except for text. In fact, this is another run-of-the-mill study-CRUD-wiki app, the most fitting of the three being the study part, in that the two primary reasons for developing the app are to provide a useful tool and to provide experience with the tools used, including MariaDB for the database part, as well as the design process for a piece of software. As one could judge from lack of multi-user approach, this is intended 
+A booru, except for text. In fact, this is another run-of-the-mill study-CRUD-wiki app, the most fitting of the three being the study part, in that the two primary reasons for developing the app are to provide a useful tool and to provide experience with the tools used, including MariaDB for the database part, as well as the design process for a piece of software.
 
 ## What it's all about
 
@@ -19,7 +19,21 @@ The generated id has 3 forms:
 
 ## Setup
 
-### The `config.js` file
+### MariaDB
+Version 10.5 is required.
+
+The following table setup is used:
+```sql
+CREATE TABLE pages (
+    id VARCHAR(17) NOT NULL PRIMARY KEY,
+    time VARCHAR(13) NOT NULL,
+    title VARCHAR(80),
+    lead VARCHAR(280),
+    body TEXT
+);
+```
+
+### `config.js`
 Besides the usual npm dance and MariaDB setup, one must include a `config.js` file in the module's root folder (that is, the same that contains `app.js`), with the following structure:
 ```js
 module.exports = {
@@ -33,18 +47,6 @@ module.exports = {
         connectTimeout: 4000,
     }
 }
-```
-
-### MariaDB
-The following table setup is required:
-```sql
-CREATE TABLE pages (
-    id VARCHAR(17) NOT NULL PRIMARY KEY,
-    time VARCHAR(13) NOT NULL,
-    title VARCHAR(80),
-    lead VARCHAR(280),
-    body TEXT
-);
 ```
 
 ## Immediate to-dos

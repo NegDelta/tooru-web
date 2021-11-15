@@ -1,5 +1,6 @@
 function setupRouter(logic_globals) {
-  var express = require('express');
+  const express = require('express');
+  const path = require('path');
   var router = express.Router();
   
   router.get('/timetoid/', function(req, res, next) {
@@ -25,7 +26,7 @@ function setupRouter(logic_globals) {
     timeint = Date.now().valueOf();
     logic_globals.prom_postPage(res, timeint, req.body, (dbres) => {
       console.log(dbres); // affectedRows, insertId, warningStatus
-      res.redirect('/');
+      res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', dbres[0].id, '/'));
     });
   });
 
