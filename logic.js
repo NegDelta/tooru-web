@@ -74,7 +74,9 @@ const appglobals = {
   cfg: cfg,
 
   timetoid: timetoid,
-
+  
+  time_fmt: timestr => new Date(Number(timestr)).toISOString(),
+  
   prom_postPage: function (httpres, timeint, reqparams, dbres_cb) {
     return prom_dbConnection(httpres, dbconn => 
       dbconn.query("SELECT COUNT(1) AS dupes FROM pages WHERE time=?;", timeint)

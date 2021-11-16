@@ -129,22 +129,27 @@ form#newpage #submit {
   outline: 0;
   padding: 5px 10px 10px;
   margin: 5px auto;
-  font-family: "Segoe UI"
+  font-family: "Segoe UI";
+}
+.pagestub:hover {
+  border-left: solid 3px var(--accenta);
+  padding-left: 7px;
 }
 .pagestub p, .pagestub h1 {
   margin: 0 auto;
 }
-p.lead {
+.lead {
   font-style: italic;
 }
-.pagestub h1 a:hover {
-  /*color: white;*/
-  text-decoration: underline;
+.pagestub a {
+  color: inherit;
+  text-decoration: inherit;
 }
-.pageid {
+.pageid, .aside {
   font-size: small;
-  color: #888;
+  color: #555;
   margin-top: 0;
+  padding-right: 1em;
 }
 h1 {
   margin-bottom: 0.3em;

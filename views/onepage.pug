@@ -3,6 +3,6 @@ block variables
     - var title = 'page'
 block content
     h1= page.title
-    p.pageid= page.id
+    p.aside #{page.renderedtime} • # #{page.id}
     p.lead= page.lead 
     p= page.body

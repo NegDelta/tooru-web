@@ -2,17 +2,24 @@ function setupRouter(logic_globals) {
   var express = require('express');
   var router = express.Router();
   
+  function add_fmtted_time(page) {
+    page.renderedtime = logic_globals.time_fmt(page.time)
+  }
+
   /* GET home page. */
   router.get('/', function(req, res, next) {
     // all pages
     logic_globals.prom_getAllPages(res, (dbres) => {
+      dbres.forEach(add_fmtted_time);
       res.render('allpages', { pages: dbres });
     });
   });
 
   router.get('/pages/:id/', function(req, res, next) {
     logic_globals.prom_getPage(res, req.params.id, (dbres) => {
-      res.render('onepage', { page: dbres[0] });
+      page = dbres[0];
+      add_fmtted_time(page);
+      res.render('onepage', { page: page });
     });
   });
   

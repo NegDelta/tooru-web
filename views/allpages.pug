@@ -4,9 +4,10 @@ block variables
 block content
   if pages
     each page in pages
-      div.pagestub
-        h1: a(href='pages/'+page.id+'/')= page.title
-        p.lead= page.lead 
+      div.pagestub: a(href='pages/'+page.id+'/')
+        p.aside= page.renderedtime
+        h1= page.title
+        p.lead= page.lead
         p= page.body
   else
     p No content
