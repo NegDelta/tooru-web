@@ -80,7 +80,8 @@ const appglobals = {
       dbconn.query("SELECT COUNT(1) AS dupes FROM pages WHERE time=?;", timeint)
       .then((dbres) => {
         ids = timetoid(timeint, Number(dbres[0].dupes));
-        return dbconn.query("INSERT INTO pages VALUES (?, ?, ?, ?, ?) RETURNING id", [
+        return dbconn.query(
+          "INSERT INTO pages VALUES (?, ?, ?, ?, ?) RETURNING id", [
           ids.output.string,
           timeint,
           reqparams.title,
@@ -101,7 +102,7 @@ const appglobals = {
 
   prom_getAllPages: function (httpres, dbres_cb) {
     return prom_dbConnection(httpres, dbconn => 
-      dbconn.query("SELECT * FROM pages;")
+      dbconn.query("SELECT * FROM pages ORDER BY time DESC;")
       .then(dbres_cb)
     );
   }
