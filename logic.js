@@ -80,7 +80,8 @@ const appglobals = {
   prom_updatePage: function (httpres, timeint, reqparams, dbres_cb) {
     return prom_dbConnection(httpres, dbconn => 
       dbconn.query(
-        "UPDATE pages SET title=?, lead=?, body=? WHERE id=?", [
+        "UPDATE pages SET edit_time=?, title=?, lead=?, body=? WHERE id=?", [
+        timeint,
         reqparams.title,
         reqparams.lead,
         reqparams.body,
@@ -95,8 +96,9 @@ const appglobals = {
       .then((dbres) => {
         ids = timetoid(timeint, Number(dbres[0].dupes));
         return dbconn.query(
-          "INSERT INTO pages VALUES (?, ?, ?, ?, ?) RETURNING id", [
+          "INSERT INTO pages VALUES (?, ?, ?, ?, ?, ?) RETURNING id", [
           ids.output.string,
+          timeint,
           timeint,
           reqparams.title,
           reqparams.lead,

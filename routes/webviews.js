@@ -4,7 +4,8 @@ function setupRouter(logic_globals) {
   var router = express.Router();
   
   function add_fmtted_time(page) {
-    page.renderedtime = logic_globals.time_fmt(page.time)
+    page.rendered_time = logic_globals.time_fmt(page.time)
+    page.rendered_edit_time = logic_globals.time_fmt(page.edit_time)
   }
 
   /* GET home page. */

@@ -5,7 +5,7 @@ block content
   if pages
     each page in pages
       div.pagestub: a(href='pages/'+page.id+'/')
-        p.aside= page.renderedtime
+        p.aside= page.rendered_time
         h1= page.title
         p.lead= page.lead
         p= page.body
