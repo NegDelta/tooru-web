@@ -3,14 +3,15 @@ block variables
   - var title = 'new page'
 block content
     form(action="api/addpage/", method="POST")#newpage
+        input(type="hidden", id="pageid", name="pageid", maxlength="17", value=page.id)
         p
             label(for="title") Title:
-            textarea(id="title", name="title", maxlength="80")
+            textarea(id="title", name="title", maxlength="80")= page.title
         p 
             label(for="lead") Lead:
-            textarea(id="lead", name="lead", maxlength="280")
+            textarea(id="lead", name="lead", maxlength="280")= page.lead
         p 
             label(for="body") Page content: 
-            textarea(id="body", name="body")
+            textarea(id="body", name="body")= page.body
         p 
             button(type="submit", id="submit") Post

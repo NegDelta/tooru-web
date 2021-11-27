@@ -77,6 +77,18 @@ const appglobals = {
   
   time_fmt: timestr => new Date(Number(timestr)).toISOString(),
   
+  prom_updatePage: function (httpres, timeint, reqparams, dbres_cb) {
+    return prom_dbConnection(httpres, dbconn => 
+      dbconn.query(
+        "UPDATE pages SET title=?, lead=?, body=? WHERE id=?", [
+        reqparams.title,
+        reqparams.lead,
+        reqparams.body,
+        reqparams.pageid
+      ]).then(dbres_cb)
+    );
+  },
+
   prom_postPage: function (httpres, timeint, reqparams, dbres_cb) {
     return prom_dbConnection(httpres, dbconn => 
       dbconn.query("SELECT COUNT(1) AS dupes FROM pages WHERE time=?;", timeint)

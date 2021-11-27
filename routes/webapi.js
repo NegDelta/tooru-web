@@ -24,10 +24,20 @@ function setupRouter(logic_globals) {
 
   router.post('/addpage/', function(req, res, next) {
     timeint = Date.now().valueOf();
-    logic_globals.prom_postPage(res, timeint, req.body, (dbres) => {
-      console.log(dbres); // affectedRows, insertId, warningStatus
-      res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', dbres[0].id, '/'));
-    });
+    if (req.body.pageid) {  // pageid is given; edit
+      // find and update page
+      console.log(req.body);
+      logic_globals.prom_updatePage(res, timeint, req.body, (dbres) => {
+        console.log(dbres); // affectedRows, insertId, warningStatus
+        res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', req.body.pageid, '/'));
+      });
+    } else {  // pageid is NOT given
+      // create new page
+      logic_globals.prom_postPage(res, timeint, req.body, (dbres) => {
+        console.log(dbres); // affectedRows, insertId, warningStatus
+        res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', dbres[0].id, '/'));
+      });
+    }
   });
 
   return router;

@@ -1,5 +1,6 @@
 function setupRouter(logic_globals) {
   var express = require('express');
+  var path = require('path');
   var router = express.Router();
   
   function add_fmtted_time(page) {
@@ -19,7 +20,20 @@ function setupRouter(logic_globals) {
     logic_globals.prom_getPage(res, req.params.id, (dbres) => {
       page = dbres[0];
       add_fmtted_time(page);
-      res.render('onepage', { page: page });
+      res.render('onepage', {
+        page: page,
+        pagetype_menu_entries: [
+          { text: 'edit', path: path.posix.join('pages/', req.params.id, 'edit/')}
+        ]
+      });
+    });
+  });
+
+  router.get('/pages/:id/edit/', function(req, res, next) {
+    logic_globals.prom_getPage(res, req.params.id, (dbres) => {
+      page = dbres[0];
+      add_fmtted_time(page);
+      res.render('newpage', { page: page });
     });
   });
   
