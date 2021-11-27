@@ -107,6 +107,12 @@ const appglobals = {
       dbconn.query("SELECT * FROM pages ORDER BY time DESC;")
       .then(dbres_cb)
     );
-  }
+  },
+
+  main_menu_entries: [
+    { text: 'all pages', path: '.'},
+    { text: 'new page', path: 'newpage/'},
+    { text: 'admin', path: 'admin/'},
+  ]
 }
 module.exports = appglobals

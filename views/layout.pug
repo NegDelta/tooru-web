@@ -13,7 +13,6 @@ html
         | #{title}
       div#pagemenu
         ul
-          li: a(href='.') all pages
-          li: a(href='newpage/') new page
-          li: a(href='admin/') admin
+          each entry in main_menu_entries
+            li: a(href=entry.path)= entry.text
     block content

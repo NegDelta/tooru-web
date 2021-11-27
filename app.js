@@ -27,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // always send url_root to renderer
 app.use(function(req, res, next) {
   res.locals.url_root = logic_globals.cfg.url_root;
+  res.locals.main_menu_entries = logic_globals.main_menu_entries;
   next()
 });
 
