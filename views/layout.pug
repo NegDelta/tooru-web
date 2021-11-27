@@ -10,8 +10,13 @@ html
       a(href='.'): img(src='images/toorubox.png', height=50)
       div#pagetitle
         div#pageicon
-        | #{title}
-      div#pagemenu
+        | #{title} 
+        if pagetype_menu_entries
+          div#pagetm.menu
+            ul
+              each entry in pagetype_menu_entries
+                li: a(href=entry.path)= entry.text
+      div#mainm.menu
         ul
           each entry in main_menu_entries
             li: a(href=entry.path)= entry.text

@@ -55,28 +55,37 @@ a {
   font-size: 20px;
 }
 
-#pagemenu {
+.menu {
+  font-size: 14px;
+}
+
+#mainm {
+  border-bottom: 1px var(--white) solid;
   position: absolute;
   left: 66px;
   top: 0;
 }
-
-#pagemenu ul {
-  margin: 0;
-  padding: 0 10px;
-  border-bottom: 1px var(--white) solid;
+#pagetm {
+  display: inline-block;
+  border-left: 1px var(--white) solid;
+  margin-left: 20px;
 }
 
-#pagemenu li {
+.menu ul {
+  margin: 0;
+  padding: 0 10px;
+}
+
+.menu li {
   display: inline;
   padding: 0 10px;
 }
 
-#pagemenu a, h1 a {
+.menu a, h1 a {
   color: var(--white);
   text-decoration: none;
 }
-#pagemenu li:hover {
+.menu li:hover {
   background-color: var(--black);
 }
 
