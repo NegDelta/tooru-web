@@ -36,17 +36,17 @@ function setupRouter(logic_globals) {
     });
   });
 
-  router.post('/editpage/', function(req, res, next) {
+  router.post('/pages/:id/update/', function(req, res, next) {
     timeint = Date.now().valueOf();
     console.log(req.body);
-    logic_globals.prom_updatePage(res, timeint, req.body, (dbres) => {
+    logic_globals.prom_updatePage(res, timeint, req.body, req.params.id, (dbres) => {
       console.log(dbres); // affectedRows, insertId, warningStatus
-      res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', req.body.pageid, '/'));
+      res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', req.params.id, '/'));
     });
   });
   
-  router.post('/deletepage/', function(req, res, next) {
-    logic_globals.prom_deletePage(res, req.body.pageid, (dbres) => {
+  router.post('/pages/:id/delete/', function(req, res, next) {
+    logic_globals.prom_deletePage(res, req.params.id, (dbres) => {
       console.log(dbres); // affectedRows, insertId, warningStatus
       res.redirect(logic_globals.cfg.url_root);
     });

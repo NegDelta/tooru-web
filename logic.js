@@ -77,7 +77,7 @@ const appglobals = {
   
   time_fmt: timestr => new Date(Number(timestr)).toISOString(),
   
-  prom_updatePage: function (httpres, timeint, reqparams, dbres_cb) {
+  prom_updatePage: function (httpres, timeint, reqparams, pageid, dbres_cb) {
     return prom_dbConnection(httpres, dbconn => 
       dbconn.query(
         "UPDATE pages SET edit_time=?, title=?, lead=?, body=? WHERE id=?", [
@@ -85,7 +85,7 @@ const appglobals = {
         reqparams.title,
         reqparams.lead,
         reqparams.body,
-        reqparams.pageid
+        pageid
       ]).then(dbres_cb)
     );
   },

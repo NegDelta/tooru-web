@@ -5,8 +5,7 @@ block content
     p.aside= page.id
     h1 Confirm page deletion
     p This action cannot be reversed.
-    form(action="api/deletepage/", method="POST")#delpage
-        input(type="hidden", id="pageid", name="pageid", maxlength="17", value=page.id)
+    form(action="api/pages/"+page.id+"/delete/", method="POST")#delpage
         p 
             button(type="button" onclick="window.location.href = 'pages/"+page.id+"'") Cancel
             button(type="submit", id="submit").destroy Delete

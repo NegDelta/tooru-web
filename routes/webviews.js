@@ -40,7 +40,7 @@ function setupRouter(logic_globals) {
       res.render('newpage', {
         page: page, 
         title: 'edit page',
-        target: 'editpage'
+        target: path.posix.join('pages', req.params.id, 'update')
       });
     });
   });
