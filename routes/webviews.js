@@ -24,7 +24,8 @@ function setupRouter(logic_globals) {
       res.render('onepage', {
         page: page,
         pagetype_menu_entries: [
-          { text: 'edit', path: path.posix.join('pages/', req.params.id, 'edit/')}
+          { text: 'edit', path: path.posix.join('pages/', req.params.id, 'edit/')},
+          { text: 'delete', path: path.posix.join('pages/', req.params.id, 'delete/')}
         ]
       });
     });
@@ -36,6 +37,10 @@ function setupRouter(logic_globals) {
       add_fmtted_time(page);
       res.render('newpage', { page: page, title: 'edit page' });
     });
+  });
+
+  router.get('/pages/:id/delete/', function(req, res, next) {
+    res.render('deletepage', { page: page});
   });
   
   router.get('/newpage/', function(req, res, next) {

@@ -39,6 +39,13 @@ function setupRouter(logic_globals) {
       });
     }
   });
+  
+  router.post('/deletepage/', function(req, res, next) {
+    logic_globals.prom_deletePage(res, req.body.pageid, (dbres) => {
+      console.log(dbres); // affectedRows, insertId, warningStatus
+      res.redirect(logic_globals.cfg.url_root);
+    });
+  });
 
   return router;
 }

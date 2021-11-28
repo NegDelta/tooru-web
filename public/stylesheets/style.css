@@ -102,17 +102,37 @@ textarea:focus {
 
 button {
   background: var(--accenta);
+  height: 30px;
+  padding: 0 10px;
   color: white;
   text-shadow: 0 1px 0 var(--bgblack);
   border: 0px;
   border-radius: 5px;
+  border-top: var(--accenta) 2px solid;
   border-bottom: var(--aashade) 2px solid;
+  box-sizing: border-box;
 }
 button:active {
   border-top: var(--black) 2px solid;
-  border-bottom: 0;
+  border-bottom: var(--aashade) 2px solid;
   background-color: var(--aashade);
 }
+
+button + button {
+  margin-left: 10px;
+}
+
+button.destroy {
+  background: var(--accentb);
+  border-top: var(--accentb) 2px solid;
+  border-bottom: var(--abshade) 2px solid;
+}
+button.destroy:active {
+  border-top: var(--black) 2px solid;
+  border-bottom: var(--abshade) 2px solid;
+  background-color: var(--abshade);
+}
+
 
 form#newpage label {
   display: block;
@@ -126,8 +146,6 @@ form#newpage #title { height: 20px }
 form#newpage #lead { height: 40px }
 form#newpage #body { height: 200px }
 form#newpage #submit {
-  width: 60px;
-  height: 30px;
   float: right;
 }
 .pagestub {

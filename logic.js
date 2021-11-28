@@ -109,6 +109,13 @@ const appglobals = {
     );
   },
 
+  prom_deletePage: function (httpres, pageid, dbres_cb) {
+    return prom_dbConnection(httpres, dbconn => 
+      dbconn.query("DELETE FROM pages WHERE id=?;", pageid)
+      .then(dbres_cb)
+    );
+  },
+
   prom_getPage: function (httpres, pageid, dbres_cb) {
     return prom_dbConnection(httpres, dbconn => 
       dbconn.query("SELECT * FROM pages WHERE id=?;", pageid)

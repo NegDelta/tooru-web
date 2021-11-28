@@ -51,9 +51,7 @@ module.exports = {
 ```
 
 ## Immediate to-dos
-- Edit page
-    - Db: column for last edit time
-- Delete page
+- Separate POST callbacks for API and views
 
 ## Long-term to-dos
 Some ideas are more fleshed-out that the others. Glitter ✨ is for the parts that will most likely see work next.
@@ -85,7 +83,6 @@ Rather special cases than MediaWiki-style special. That's because the latter wou
 ### Others
 - Validate input to disallow (or at least prompt for confirmation) completely empty pages
 - Sort and filter pages
-    - ✨ by time, by default
 - ✨ Use the `nconf` or `config` package to verify existence and structure of the config file
     - Report any problems in console
 - ✨ Check database for specified tables and columns 
