@@ -1,8 +1,12 @@
+//  TO BE RENAMED TO json_api.js
+
 function setupRouter(logic_globals) {
   const express = require('express');
   const path = require('path');
   var router = express.Router();
   
+  /// API global
+
   router.get('/timetoid/', function(req, res, next) {
     res.redirect('./0');    
   });
@@ -12,32 +16,33 @@ function setupRouter(logic_globals) {
     res.json(ids.output);    
   });
 
-  router.get('/allpages/', function(req, res, next) {
+  router.post('/dummy/', function(req, res, next) {
+    res.json(req.body);
+  });
+
+  /// /pages/
+
+  router.get('/pages/', function(req, res, next) {
     logic_globals.prom_getAllPages(res, (dbres) => {
       res.json(dbres);
     });
   });
 
-  router.post('/dummy/', function(req, res, next) {
-    res.json(req.body);
+  router.post('/pages/new/', function(req, res, next) {
+    timeint = Date.now().valueOf();
+    logic_globals.prom_postPage(res, timeint, req.body, (dbres) => {
+      console.log(dbres); // affectedRows, insertId, warningStatus
+      res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', dbres[0].id, '/'));
+    });
   });
 
-  router.post('/addpage/', function(req, res, next) {
+  router.post('/editpage/', function(req, res, next) {
     timeint = Date.now().valueOf();
-    if (req.body.pageid) {  // pageid is given; edit
-      // find and update page
-      console.log(req.body);
-      logic_globals.prom_updatePage(res, timeint, req.body, (dbres) => {
-        console.log(dbres); // affectedRows, insertId, warningStatus
-        res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', req.body.pageid, '/'));
-      });
-    } else {  // pageid is NOT given
-      // create new page
-      logic_globals.prom_postPage(res, timeint, req.body, (dbres) => {
-        console.log(dbres); // affectedRows, insertId, warningStatus
-        res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', dbres[0].id, '/'));
-      });
-    }
+    console.log(req.body);
+    logic_globals.prom_updatePage(res, timeint, req.body, (dbres) => {
+      console.log(dbres); // affectedRows, insertId, warningStatus
+      res.redirect(path.posix.join(logic_globals.cfg.url_root, '/pages/', req.body.pageid, '/'));
+    });
   });
   
   router.post('/deletepage/', function(req, res, next) {

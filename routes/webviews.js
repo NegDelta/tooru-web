@@ -1,3 +1,5 @@
+//  TO BE RENAMED TO web_ui.js
+
 function setupRouter(logic_globals) {
   var express = require('express');
   var path = require('path');
@@ -35,16 +37,24 @@ function setupRouter(logic_globals) {
     logic_globals.prom_getPage(res, req.params.id, (dbres) => {
       page = dbres[0];
       add_fmtted_time(page);
-      res.render('newpage', { page: page, title: 'edit page' });
+      res.render('newpage', {
+        page: page, 
+        title: 'edit page',
+        target: 'editpage'
+      });
     });
   });
 
   router.get('/pages/:id/delete/', function(req, res, next) {
-    res.render('deletepage', { page: page});
+    res.render('deletepage', { page: page });
   });
   
   router.get('/newpage/', function(req, res, next) {
-    res.render('newpage', { page: {} });
+    res.render('newpage', {
+      page: {}, 
+      title: 'new page',
+      target: 'pages/new'
+    });
   });
   
   router.get('/admin/', function(req, res, next) {
