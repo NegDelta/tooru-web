@@ -34,12 +34,12 @@ function setupRouter(logic_globals) {
     logic_globals.prom_getPage(res, req.params.id, (dbres) => {
       page = dbres[0];
       add_fmtted_time(page);
-      res.render('newpage', { page: page });
+      res.render('newpage', { page: page, title: 'edit page' });
     });
   });
   
   router.get('/newpage/', function(req, res, next) {
-    res.render('newpage');
+    res.render('newpage', { page: {} });
   });
   
   router.get('/admin/', function(req, res, next) {

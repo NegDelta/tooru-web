@@ -1,6 +1,7 @@
 extends layout
 block variables
-  - var title = 'new page'
+  if (title == undefined)
+    - var title = 'new page'
 block content
     form(action="api/addpage/", method="POST")#newpage
         input(type="hidden", id="pageid", name="pageid", maxlength="17", value=page.id)
