@@ -75,7 +75,9 @@ const appglobals = {
 
   timetoid: timetoid,
   
-  time_fmt: timestr => new Date(Number(timestr)).toISOString(),
+  time_fmt: function(timestr) { 
+    return new Date(Number(timestr)).toDateString()
+  },
   
   prom_updatePage: function (httpres, timeint, reqparams, pageid, dbres_cb) {
     return prom_dbConnection(httpres, dbconn => 

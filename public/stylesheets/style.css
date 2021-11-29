@@ -18,10 +18,6 @@ body, textarea {
     font: 14px "Lucida Grande", "Segoe UI", Helvetica, sans-serif;
 }
 
-.hilit {
-  background-color: #494949;
-}
-
 a {
   color: var(--accenta);
 }
@@ -103,19 +99,19 @@ textarea:focus {
 button {
   background: var(--accenta);
   height: 30px;
-  padding: 0 10px;
+  padding: 0px 10px 0px;
   color: white;
   text-shadow: 0 1px 0 var(--bgblack);
   border: 0px;
   border-radius: 5px;
-  border-top: var(--accenta) 2px solid;
   border-bottom: var(--aashade) 2px solid;
   box-sizing: border-box;
 }
 button:active {
   border-top: var(--black) 2px solid;
-  border-bottom: var(--aashade) 2px solid;
   background-color: var(--aashade);
+  padding: -2px 10px 2px;
+  vertical-align: -1px;
 }
 
 button + button {
@@ -124,15 +120,12 @@ button + button {
 
 button.destroy {
   background: var(--accentb);
-  border-top: var(--accentb) 2px solid;
   border-bottom: var(--abshade) 2px solid;
 }
 button.destroy:active {
   border-top: var(--black) 2px solid;
-  border-bottom: var(--abshade) 2px solid;
   background-color: var(--abshade);
 }
-
 
 form#newpage label {
   display: block;
@@ -172,12 +165,16 @@ form#newpage #submit {
   color: inherit;
   text-decoration: inherit;
 }
-.pageid, .aside {
+.aside {
   font-size: small;
-  color: #555;
+  color: #707070;
   margin-top: 0;
   padding-right: 1em;
 }
+.pagestub .aside {
+  color: #555;
+}
+
 h1 {
   margin-bottom: 0.3em;
 }
