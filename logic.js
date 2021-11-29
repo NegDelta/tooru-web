@@ -132,7 +132,7 @@ const appglobals = {
 
   main_menu_entries: [
     { text: 'all pages', path: '.'},
-    { text: 'new page', path: 'newpage/'},
+    { text: 'new page', path: 'pages/new/'},
     { text: 'admin', path: 'admin/'},
   ]
 }

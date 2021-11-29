@@ -28,6 +28,13 @@ function setupRouter(logic_globals) {
     });
   });
 
+  router.get('/pages/:id([\\d-]+)/', function(req, res, next) {
+    logic_globals.prom_getPage(res, req.params.id, (dbres) => {
+      page = dbres[0];
+      res.json(page);
+    });
+  });
+
   router.post('/pages/new/', function(req, res, next) {
     timeint = Date.now().valueOf();
     logic_globals.prom_postPage(res, timeint, req.body, (dbres) => {
@@ -36,7 +43,7 @@ function setupRouter(logic_globals) {
     });
   });
 
-  router.post('/pages/:id/update/', function(req, res, next) {
+  router.post('/pages/:id([\\d-]+)/update/', function(req, res, next) {
     timeint = Date.now().valueOf();
     console.log(req.body);
     logic_globals.prom_updatePage(res, timeint, req.body, req.params.id, (dbres) => {
@@ -45,7 +52,7 @@ function setupRouter(logic_globals) {
     });
   });
   
-  router.post('/pages/:id/delete/', function(req, res, next) {
+  router.post('/pages/:id([\\d-]+)/delete/', function(req, res, next) {
     logic_globals.prom_deletePage(res, req.params.id, (dbres) => {
       console.log(dbres); // affectedRows, insertId, warningStatus
       res.redirect(logic_globals.cfg.url_root);

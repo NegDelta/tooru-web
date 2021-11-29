@@ -10,16 +10,18 @@ function setupRouter(logic_globals) {
     page.rendered_edit_time = logic_globals.time_fmt(page.edit_time)
   }
 
-  /* GET home page. */
-  router.get('/', function(req, res, next) {
+  function rtcb_getAllPages(req, res, next) {
     // all pages
     logic_globals.prom_getAllPages(res, (dbres) => {
       dbres.forEach(add_fmtted_time);
       res.render('allpages', { pages: dbres });
     });
-  });
+  }
 
-  router.get('/pages/:id/', function(req, res, next) {
+  router.get('/', rtcb_getAllPages);
+  router.get('/pages/', rtcb_getAllPages);
+
+  router.get('/pages/:id([\\d-]+)/', function(req, res, next) {
     logic_globals.prom_getPage(res, req.params.id, (dbres) => {
       page = dbres[0];
       add_fmtted_time(page);
@@ -33,7 +35,7 @@ function setupRouter(logic_globals) {
     });
   });
 
-  router.get('/pages/:id/edit/', function(req, res, next) {
+  router.get('/pages/:id([\\d-]+)/edit/', function(req, res, next) {
     logic_globals.prom_getPage(res, req.params.id, (dbres) => {
       page = dbres[0];
       add_fmtted_time(page);
@@ -45,11 +47,11 @@ function setupRouter(logic_globals) {
     });
   });
 
-  router.get('/pages/:id/delete/', function(req, res, next) {
+  router.get('/pages/:id([\\d-]+)/delete/', function(req, res, next) {
     res.render('deletepage', { page: page });
   });
   
-  router.get('/newpage/', function(req, res, next) {
+  router.get('/pages/new/', function(req, res, next) {
     res.render('newpage', {
       page: {}, 
       title: 'new page',
