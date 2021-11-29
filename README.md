@@ -1,5 +1,5 @@
 # tooru
-A booru, except for text. In fact, this is another run-of-the-mill study-CRUD-wiki app, the most fitting of the three being the study part, in that the two primary reasons for developing the app are to provide a useful tool and to provide experience with the tools used, including MariaDB for the database part, as well as the design process for a piece of software.
+A booru, except for text. In fact, this is another run-of-the-mill study-CRUD-wiki app, the most fitting of the three being the study part, in that the two primary reasons for developing the app are to provide a useful tool and to provide experience with the tools used, including MariaDB for the database part, as well as the design process for a piece of software. As this is more of a personal tool, the whole multi-user part with accounts and so on is not on the todo list.
 
 ## What it's all about
 
@@ -107,3 +107,4 @@ Rather special cases than MediaWiki-style special. That's because the latter wou
     - To go with the quick goto
 - Serialization and deserialization. That is, making and loading backups
 - Use AJAX to retrieve data in views
+- Use CSS preprocessing
