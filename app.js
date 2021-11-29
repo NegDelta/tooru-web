@@ -6,8 +6,9 @@ var logger = require('morgan');
 
 const logic_globals = require('./logic.js');
 
-var viewRouter = require('./routes/webviews')(logic_globals);
-var apiRouter = require('./routes/webapi')(logic_globals);
+var rt_web_ui = require('./routes/web_ui')(logic_globals);
+var rt_web_api = require('./routes/web_api')(logic_globals);
+var rt_json_api = require('./routes/json_api')(logic_globals);
 
 // wrapper to take care to the base url problem
 var app_wrap = express();
@@ -31,8 +32,9 @@ app.use(function(req, res, next) {
   next()
 });
 
-app.use('/', viewRouter);
-app.use('/api', apiRouter);
+app.use('/', rt_web_ui);
+app.use('/', rt_web_api);
+app.use('/api', rt_json_api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

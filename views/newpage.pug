@@ -3,7 +3,7 @@ block variables
   if (title == undefined)
     - var title = 'new page'
 block content
-    form(action="api/"+target+"/", method="POST")#newpage
+    form(action=target+"/", method="POST")#newpage
         p
             label(for="title") Title:
             textarea(id="title", name="title", maxlength="80")= page.title

@@ -51,7 +51,7 @@ module.exports = {
 ```
 
 ## Immediate to-dos
-- Separate POST callbacks for API and views
+- Proper handling of 404-able requests
 
 ## Long-term to-dos
 Some ideas are more fleshed-out that the others. Glitter ✨ is for the parts that will most likely see work next.
@@ -106,3 +106,4 @@ Rather special cases than MediaWiki-style special. That's because the latter wou
     - Few characters long
     - To go with the quick goto
 - Serialization and deserialization. That is, making and loading backups
+- Use AJAX to retrieve data in views

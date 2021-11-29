@@ -1,4 +1,4 @@
-//  TO BE RENAMED TO web_ui.js
+// These endpoints are to be called directly from the user or web UI links, and return pages. These should be idempotent.
 
 function setupRouter(logic_globals) {
   var express = require('express');
