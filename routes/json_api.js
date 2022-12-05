@@ -1,5 +1,11 @@
 // These endpoints are to be called directly, and do not return pages.
 
+function set_dl(req, res, filename) {
+  if(req.query.dl == 1) {
+    res.set('Content-disposition', 'attachment; filename="' + filename + '.json"');
+  }
+}
+
 function setupRouter(logic_globals) {
   var express = require('express');
   var path = require('path');
@@ -21,6 +27,7 @@ function setupRouter(logic_globals) {
   // GET all pages
   router.get('/pages/', function(req, res, next) {
     logic_globals.prom_getAllPages(res, (dbres) => {
+      set_dl(req, res, 'tooru-pages');
       res.json(dbres);
     });
   });
@@ -39,12 +46,17 @@ function setupRouter(logic_globals) {
   });
 
   // GET, PUT (edit), DELETE a given page
-  router.all('/pages/:id([\\d-]+)/', function(req, res, next) {
+  router.route('/pages/:id([\\d-]+)/', function(req, res, next) {
     // catch-all for all verbs
     next()
   }).get(function(req, res, next) {
     logic_globals.prom_getPage(res, req.params.id, (dbres) => {
+      if (dbres.length == 0) {
+        res.status(404).end();
+        return;
+      }
       page = dbres[0];
+      set_dl(req, res, req.params.id);
       res.json(page);
     });
   }).put(function(req, res, next) {

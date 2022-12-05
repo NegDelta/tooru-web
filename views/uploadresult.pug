@@ -1,0 +1,10 @@
+extends layout
+block variables
+  - var title = 'uploaded pages'
+block content
+  h1 Pages found in #{page_filename}:
+  ul
+    each page in found_pages
+      li= page
+    else
+      li None

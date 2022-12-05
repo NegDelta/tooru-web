@@ -1,6 +1,11 @@
 var mariadb = require('mariadb');
+var nconf = require('nconf');
 
-const cfg = require('./config')
+nconf.argv()
+  .env()
+  .file({ file: 'config.json' });
+
+const cfg = nconf.get()
 mdb_pool = mariadb.createPool(cfg.dbpool);
 
 function timetoid(timeint, dupecount) {
@@ -132,10 +137,21 @@ const appglobals = {
     );
   },
 
-  main_menu_entries: [
-    { text: 'all pages', path: '.'},
-    { text: 'new page', path: 'pages/new/'},
-    { text: 'admin', path: 'admin/'},
-  ]
+  find_pages: function(o) {
+    var pages = [];
+    return pages;
+  },
+
+  menu_entries: {
+    main: [
+      { text: 'all pages', path: '.'},
+      { text: 'new page', path: 'pages/new/'},
+      { text: 'upload', path: 'upload/'},
+      { text: 'admin', path: 'admin/'},
+    ],
+    pagecoll_sub: [
+      { text: 'download', path: 'api/pages?dl=1'},
+    ]
+  }
 }
 module.exports = appglobals

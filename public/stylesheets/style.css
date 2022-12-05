@@ -127,19 +127,32 @@ button.destroy:active {
   background-color: var(--abshade);
 }
 
-form#newpage label {
+form label {
   display: block;
   width: 100px;
 }
-form#newpage textarea {
+form textarea {
   width: 995px;
   resize: none;
 }
-form#newpage #title { height: 20px }
-form#newpage #lead { height: 40px }
-form#newpage #body { height: 200px }
-form#newpage #submit {
+form #title { height: 20px }
+form #lead { height: 40px }
+form #body { height: 200px }
+form #file {
+  width: 900px;
+  padding: 4px;
+  border-radius: 5px;
+  margin-top: 5px;
+  color: var(--whshade);
+  background-color: var(--black);
+  font-style: italic;
+}
+form #submit {
   float: right;
+  height: 30px;
+}
+form #submit.inline {
+  margin-top: 5px;
 }
 .pagestub {
   background-color: #222;

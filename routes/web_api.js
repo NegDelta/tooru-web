@@ -1,4 +1,7 @@
 // These endpoints are to be called from the web UI forms.
+const multer = require('multer');
+const storage = multer.memoryStorage()
+const mw_upload = multer({ storage: storage })
 
 function setupRouter(logic_globals) {
   var express = require('express');
@@ -27,6 +30,15 @@ function setupRouter(logic_globals) {
       console.log(dbres);
       res.redirect(logic_globals.cfg.url_root);
     });
+  });
+
+  router.post('/upload/', mw_upload.single('uploadfile'), function(req, res, next) {
+    const uploaded_obj = JSON.parse(req.file.buffer);
+    const found_pages = logic_globals.find_pages(uploaded_obj);
+    res.render('uploadresult', {
+      found_pages: found_pages,
+      page_filename: req.file.originalname
+    })
   });
 
   return router;

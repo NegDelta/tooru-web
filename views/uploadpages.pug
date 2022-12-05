@@ -1,0 +1,9 @@
+extends layout
+block variables
+    - var title = 'upload pages'
+block content
+    form(action="upload", enctype="multipart/form-data", method="POST")
+        p
+            label(for="file") Submit file:
+            input(type="file", name="uploadfile")#file
+            button(type="submit", id="submit").inline Upload

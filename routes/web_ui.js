@@ -14,43 +14,16 @@ function setupRouter(logic_globals) {
     // all pages
     logic_globals.prom_getAllPages(res, (dbres) => {
       dbres.forEach(add_fmtted_time);
-      res.render('allpages', { pages: dbres });
+      res.render('allpages', {
+        pages: dbres,
+        pagetype_menu_entries: logic_globals.menu_entries.pagecoll_sub
+      });
     });
   }
 
   router.get('/', rtcb_getAllPages);
   router.get('/pages/', rtcb_getAllPages);
 
-  router.get('/pages/:id([\\d-]+)/', function(req, res, next) {
-    logic_globals.prom_getPage(res, req.params.id, (dbres) => {
-      page = dbres[0];
-      add_fmtted_time(page);
-      res.render('onepage', {
-        page: page,
-        pagetype_menu_entries: [
-          { text: 'edit', path: path.posix.join('pages/', req.params.id, 'edit/')},
-          { text: 'delete', path: path.posix.join('pages/', req.params.id, 'delete/')}
-        ]
-      });
-    });
-  });
-
-  router.get('/pages/:id([\\d-]+)/edit/', function(req, res, next) {
-    logic_globals.prom_getPage(res, req.params.id, (dbres) => {
-      page = dbres[0];
-      add_fmtted_time(page);
-      res.render('newpage', {
-        page: page, 
-        title: 'edit page',
-        target: path.posix.join('pages', req.params.id, 'update')
-      });
-    });
-  });
-
-  router.get('/pages/:id([\\d-]+)/delete/', function(req, res, next) {
-    res.render('deletepage', { page: page });
-  });
-  
   router.get('/pages/new/', function(req, res, next) {
     res.render('newpage', {
       page: {}, 
@@ -58,10 +31,63 @@ function setupRouter(logic_globals) {
       target: 'pages/new'
     });
   });
+
+  var rt_page = express.Router();
+
+  rt_page.get('/', function(req, res, next) {
+    logic_globals.prom_getPage(res, res.locals.pageid, (dbres) => {
+      if (dbres.length == 0) {
+        next('route');  // pass out into 404 middleware
+        return;
+      }
+      page = dbres[0];
+      add_fmtted_time(page);
+      res.render('onepage', {
+        page: page,
+        pagetype_menu_entries: [
+          { text: 'edit', path: path.posix.join('pages/', res.locals.pageid, 'edit/')},
+          { text: 'delete', path: path.posix.join('pages/', res.locals.pageid, 'delete/')},
+          { text: 'download', path: path.posix.join('api/pages/', res.locals.pageid, '?dl=1')}
+        ]
+      });
+    });
+  });
+
+  rt_page.get('/edit/', function(req, res, next) {
+    logic_globals.prom_getPage(res, res.locals.pageid, (dbres) => {
+      page = dbres[0];
+      add_fmtted_time(page);
+      res.render('newpage', {
+        page: page, 
+        title: 'edit page',
+        target: path.posix.join('pages', res.locals.pageid, 'update')
+      });
+    });
+  });
+
+  rt_page.get('/delete/', function(req, res, next) {
+    logic_globals.prom_getPage(res, res.locals.pageid, (dbres) => {
+      page = dbres[0];
+      res.render('deletepage', {
+        page: page,
+      });
+    });
+  });
   
+  router.use('/pages/:id([\\d-]+)/', function(req, res, next) {
+    res.locals.pageid = req.params.id;
+    next();
+  }, rt_page);
+   
   router.get('/admin/', function(req, res, next) {
     res.render('adminindex', {
       cfgjson: JSON.stringify(logic_globals.cfg)
+    })
+  });
+
+  router.get('/upload/', function(req, res, next) {
+    res.render('uploadpages', {
+      //
     })
   });
 

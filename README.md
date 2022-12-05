@@ -18,40 +18,20 @@ The generated id has 3 forms:
 - list, e.g. `[355, 320, 803, 16358]` - for frontend
 
 ## Setup
-
-### MariaDB
-Version 10.5 is required.
-
-The following table setup is used:
-```sql
-CREATE TABLE pages (
-    id VARCHAR(17) NOT NULL PRIMARY KEY,
-    time VARCHAR(13) NOT NULL,
-    edit_time VARCHAR(13) NOT NULL,
-    title VARCHAR(80),
-    lead VARCHAR(280),
-    body TEXT
-);
-```
-
-### `config.js`
-Besides the usual npm dance and MariaDB setup, one must include a `config.js` file in the module's root folder (that is, the same that contains `app.js`), with the following structure:
-```js
-module.exports = {
-    url_root: '/path/to/app/',
-    dbpool: {
-        host: 'hostname.example', 
-        user: 'db_user', 
-        password: 'db_password',
-        database: 'database_name',
-        connectionLimit: 5,
-        connectTimeout: 4000,
-    }
-}
-```
+- Install MariaDB 10.5.
+- Run `setup.sql`.
+- Copy `config.json` from `config.json.default`.
 
 ## Immediate to-dos
-- Proper handling of 404-able requests
+- Deserialization. That is, loading backups
+    - input processing
+        - validate json
+            - recursively look for valid Pages
+            - valid Pages have IdTime, Content, \[time_last_modified\]
+            - valid IdTime has one of (id, time_created) or both, but consistent - otherwise malformed
+                - skip ids clashing with pages existing in db
+            - valid Content has at least one of (title, body), \[lead\]
+        - prepare data to fill in for logic requests
 
 ## Long-term to-dos
 Some ideas are more fleshed-out that the others. Glitter ✨ is for the parts that will most likely see work next.
@@ -82,11 +62,8 @@ Rather special cases than MediaWiki-style special. That's because the latter wou
 
 ### Others
 - Validate input to disallow (or at least prompt for confirmation) completely empty pages
+- Upload: prompt correction when encountering invalid (id, time_created) combo
 - Sort and filter pages
-- ✨ Use the `nconf` or `config` package to verify existence and structure of the config file
-    - Report any problems in console
-- ✨ Check database for specified tables and columns 
-    - Run checks in an admin route and report any problems in-app
 - Actual npm magic around versions and changes
 - Use Quill.js for page editor
 - Rendering options
@@ -101,10 +78,13 @@ Rather special cases than MediaWiki-style special. That's because the latter wou
     - Dates of creation, last edition, etc.
 - File-like flow of page state
     - Save As
-    - Save Copy
+    - Duplicate
 - Page shortcuts
     - Few characters long
     - To go with the quick goto
-- Serialization and deserialization. That is, making and loading backups
 - Use AJAX to retrieve data in views
 - Use CSS preprocessing
+- Verify existence and structure of `config.json`
+    - Report any problems in console
+- Check database for specified tables and columns 
+    - Run checks in an admin route and report any problems in-app
