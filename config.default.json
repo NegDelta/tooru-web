@@ -1,0 +1,11 @@
+{
+  "url_root": "/",
+  "dbpool": {
+    "host": "example.com",
+    "user": "db_username",
+    "password": "db_password",
+    "database": "db",
+    "connectionLimit": 5,
+    "connectTimeout": 4000
+  }
+}

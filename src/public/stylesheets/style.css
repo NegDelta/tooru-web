@@ -14,8 +14,9 @@ body {
   background-color: var(--bgblack);
   color: var(--white);
 }
-body, textarea {
-    font: 14px "Lucida Grande", "Segoe UI", Helvetica, sans-serif;
+body,
+textarea {
+  font: 14px "Lucida Grande", "Segoe UI", Helvetica, sans-serif;
 }
 
 a {
@@ -77,7 +78,8 @@ a {
   padding: 0 10px;
 }
 
-.menu a, h1 a {
+.menu a,
+h1 a {
   color: var(--white);
   text-decoration: none;
 }
@@ -135,9 +137,15 @@ form textarea {
   width: 995px;
   resize: none;
 }
-form #title { height: 20px }
-form #lead { height: 40px }
-form #body { height: 200px }
+form #title {
+  height: 20px;
+}
+form #lead {
+  height: 40px;
+}
+form #body {
+  height: 200px;
+}
 form #file {
   width: 900px;
   padding: 4px;
@@ -168,7 +176,8 @@ form #submit.inline {
   border-left: solid 3px var(--accenta);
   padding-left: 7px;
 }
-.pagestub p, .pagestub h1 {
+.pagestub p,
+.pagestub h1 {
   margin: 0 auto;
 }
 .lead {

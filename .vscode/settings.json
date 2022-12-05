@@ -1,0 +1,9 @@
+{
+  "css.format.preserveNewLines": false,
+  "css.lint.duplicateProperties": "warning",
+  "css.format.spaceAroundSelectorSeparator": true,
+  "editor.formatOnSave": true,
+  "json.format.keepLines": true,
+  "eslint.alwaysShowStatus": true,
+  "eslint.format.enable": true
+}
