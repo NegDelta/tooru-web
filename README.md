@@ -35,7 +35,7 @@ The generated id has 3 forms:
 
 ### Decoupling frontend and backend
 
-- Replace db queries with xhr
+- Replace logic api calls with localhost xhr
 - Fork to `tooru-web`
 
 ## Long-term to-dos

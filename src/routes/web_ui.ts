@@ -1,42 +1,50 @@
 // These endpoints are to be called directly from the user or web UI links, and return pages. These should be idempotent.
 
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import path from 'path';
 import { NextFunction, Request, Response } from 'express';
-import { cfg, menu_entries, prom_getAllPages, prom_getPage, time_fmt } from '../logic';
-import { Page } from '../types';
+import { cfg, getAllPages, getPage, menu_entries, prettyTrim, time_fmt } from '../logic';
+import { Page, PageRenderProps } from '../types';
 import createDebug from 'debug';
 
 createDebug.enable('tooru:*');
-const _debug = createDebug('tooru:webui');
+const debug = createDebug('tooru:webui');
+
+const renderTime = (page: Page) =>
+  ({
+    ...page,
+    rendered_time: time_fmt(page.time),
+    rendered_edit_time: time_fmt(page.edit_time)
+  } as PageRenderProps);
 
 const setupRouter = () => {
   const router = express.Router();
 
-  const add_fmtted_time = (page: Page) => {
-    const fmt_page = {
-      ...page,
-      rendered_time: time_fmt(page.time),
-      rendered_edit_time: time_fmt(page.edit_time)
-    };
-    return fmt_page;
+  const handleErrors = (routeCallback: RequestHandler) => async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await routeCallback(req, res, next);
+    } catch (e) {
+      // render error
+      const rawError = JSON.stringify(e);
+      const trimmedError = prettyTrim(rawError);
+      debug(`received error: ${trimmedError}`);
+      res.send(`Error: ${rawError}`);
+    }
   };
 
-  const rtcb_getAllPages = (_req: Request, res: Response, _next: NextFunction) => {
-    // all pages
-    prom_getAllPages(res, (dbres) => {
-      dbres.forEach(add_fmtted_time);
-      res.render('allpages', {
-        pages: dbres,
-        pagetype_menu_entries: menu_entries.pagecoll_sub
-      });
+  const rtcb_getAllPages = async (_req: Request, res: Response, _next: NextFunction) => {
+    const pages = await getAllPages();
+
+    res.render('allpages', {
+      pages,
+      pagetype_menu_entries: menu_entries.pagecoll_sub
     });
   };
 
-  router.get('/', rtcb_getAllPages);
-  router.get('/pages/', rtcb_getAllPages);
+  router.get('/', handleErrors(rtcb_getAllPages));
+  router.get('/pages/', handleErrors(rtcb_getAllPages));
 
-  router.get('/pages/new/', (_req, res, _next) => {
+  router.get('/pages/new/', (req, res) => {
     res.render('newpage', {
       page: {},
       title: 'new page',
@@ -46,48 +54,42 @@ const setupRouter = () => {
 
   const rt_page = express.Router();
 
-  rt_page.get('/', (_req, res, next) => {
-    prom_getPage(res, res.locals.pageid, (dbres) => {
-      if (dbres.length == 0) {
-        next('route'); // pass out into 404 middleware
-        return;
-      }
-      const page = dbres[0];
-      const fmt_page = add_fmtted_time(page);
-      res.render('onepage', {
-        page: fmt_page,
-        pagetype_menu_entries: [
-          { text: 'edit', path: path.posix.join('pages/', res.locals.pageid, 'edit/') },
-          { text: 'delete', path: path.posix.join('pages/', res.locals.pageid, 'delete/') },
-          { text: 'download', path: path.posix.join('api/pages/', res.locals.pageid, '?dl=1') }
-        ]
-      });
-    });
+  rt_page.get('/', async (req, res) => {
+    const { page, pagetype_menu_entries } = res.locals;
+    res.render('onepage', { page, pagetype_menu_entries });
   });
 
-  rt_page.get('/edit/', (_req, res, _next) => {
-    prom_getPage(res, res.locals.pageid, (dbres) => {
-      const page = dbres[0];
-      const fmt_page = add_fmtted_time(page);
-      res.render('newpage', {
-        page: fmt_page,
-        title: 'edit page',
-        target: path.posix.join('pages', res.locals.pageid, 'update')
-      });
-    });
+  rt_page.get('/edit/', (req, res) => {
+    const { page } = res.locals;
+
+    res.render('newpage', { page, title: 'edit page', target: path.posix.join('pages', page.id, 'update') });
   });
 
   rt_page.get('/delete/', (_req, res, _next) => {
-    prom_getPage(res, res.locals.pageid, (dbres) => {
-      const page = dbres[0];
-      res.render('deletepage', { page });
-    });
+    const { page } = res.locals;
+
+    res.render('deletepage', { page });
   });
 
   router.use(
     '/pages/:id([\\d-]+)/',
-    (req, res, next) => {
-      res.locals.pageid = req.params.id;
+    async (req, res, next) => {
+      const id = req.params.id;
+
+      const page = await getPage(id);
+      debug('got page:', page);
+      if (!page) {
+        next('route'); // pass out into 404 middleware
+        return;
+      }
+
+      const pageProps = renderTime(page);
+      res.locals.page = pageProps;
+      res.locals.pagetype_menu_entries = [
+        { text: 'edit', path: path.posix.join('pages/', page.id, 'edit/') },
+        { text: 'delete', path: path.posix.join('pages/', page.id, 'delete/') },
+        { text: 'download', path: path.posix.join('api/pages/', page.id, '?dl=1') }
+      ];
       next();
     },
     rt_page

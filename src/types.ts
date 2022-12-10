@@ -10,13 +10,27 @@ export interface Page extends PageUserEditableFields {
   edit_time: string;
 }
 
-export type SqlSelectPagesResponse = {
+export interface PageRenderProps extends Page {
+  rendered_time: string;
+  rendered_edit_time: string;
+}
+
+export type SqlPagesSchema = {
   id: string;
   time: string;
   edit_time: string;
   title: string;
   lead: string;
   body: string;
-}[];
+};
 
-export type SqlResponseCallback<T> = (dbres: T) => void;
+export type SqlSelectPagesResult = SqlPagesSchema[];
+
+export type SqlSelectDupesResult = [
+  {
+    dupes: string;
+  }
+];
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type QueryParametersList = any[];

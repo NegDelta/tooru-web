@@ -1,16 +1,14 @@
-import { Response } from 'express';
-import mariadb, { PoolConnection, UpsertResult } from 'mariadb';
 import nconf from 'nconf';
-import { Page, PageUserEditableFields, SqlResponseCallback, SqlSelectPagesResponse } from './types';
+import { Page, PageUserEditableFields } from './types';
 import createDebug from 'debug';
+import sqlApi from './sql';
 
 createDebug.enable('tooru:*');
-const debug = createDebug('tooru:logic');
+const _debug = createDebug('tooru:logic');
 
 nconf.argv().env().file({ file: 'config.json' });
 
 export const cfg = nconf.get();
-export const mdb_pool = mariadb.createPool(cfg.dbpool);
 
 export const timetoid = (timeint: number, dupecount: number) => {
   const timestr_nosuffix = timeint.toString();
@@ -27,7 +25,7 @@ export const timetoid = (timeint: number, dupecount: number) => {
 
   const idint = timeint * 10 + hashdig;
   const timestr_hash = idint.toString();
-  const triplets = [];
+  const triplets = [] as string[];
 
   triplets.push(timestr_hash.slice(-3));
   triplets.push(timestr_hash.slice(-6, -3));
@@ -52,120 +50,42 @@ export const timetoid = (timeint: number, dupecount: number) => {
   };
 };
 
-const prom_dbConnection = (httpres: Response, conn_prom: (conn: PoolConnection) => Promise<PoolConnection>) => {
-  // conn_prom must take connection and resolve returning connection
-  const prom_report_success = (conn: PoolConnection) => {
-    debug('Established DB connection:', conn.threadId);
-    return conn;
-  };
-
-  const handle_connection = (conn: PoolConnection) => {
-    return conn_prom(conn)
-      .then((conn) => {
-        debug('Ending DB connection:' + conn.threadId);
-        conn.end();
-      })
-      .catch((err: Error) => {
-        debug('Error in DB connection', err);
-        conn.end();
-      });
-  };
-
-  return mdb_pool
-    .getConnection()
-    .then(prom_report_success)
-    .then(handle_connection)
-    .catch((err) => {
-      debug('Cannot connect to database:', err);
-      httpres.send('Cannot connect to database'); // TODO: render
-    });
-};
-
 export const time_fmt = (timestr: string) => new Date(Number(timestr)).toDateString();
 
-export const prom_updatePage = (
-  httpres: Response,
-  timeint: number,
-  reqparams: PageUserEditableFields,
-  pageid: string,
-  dbres_cb: SqlResponseCallback<UpsertResult>
-) => {
-  return prom_dbConnection(httpres, (dbconn) =>
-    dbconn
-      .query('UPDATE pages SET edit_time=?, title=?, lead=?, body=? WHERE id=?', [
-        timeint,
-        reqparams.title,
-        reqparams.lead,
-        reqparams.body,
-        pageid
-      ])
-      .then(dbres_cb)
-      .then(() => dbconn)
-  );
+export const updatePage = async (pageId: string, { title, lead, body }: PageUserEditableFields) => {
+  const timeCreated = Date.now().valueOf();
+
+  await sqlApi.updatePage(timeCreated, title, lead, body, pageId);
 };
 
-export const prom_postPage = (
-  httpres: Response,
-  timeint: number,
-  reqparams: PageUserEditableFields,
-  dbres_cb: SqlResponseCallback<UpsertResult>
-) => {
-  return prom_dbConnection(httpres, (dbconn) =>
-    dbconn
-      .query('SELECT COUNT(1) AS dupes FROM pages WHERE time=?;', timeint)
-      .then((dbres) => {
-        const ids = timetoid(timeint, Number(dbres[0].dupes));
-        return dbconn.query('INSERT INTO pages VALUES (?, ?, ?, ?, ?, ?) RETURNING id', [
-          ids.output.string,
-          timeint,
-          timeint,
-          reqparams.title,
-          reqparams.lead,
-          reqparams.body
-        ]);
-      })
-      .then(dbres_cb)
-      .then(() => dbconn)
-  );
+export const addPage = async ({ title, lead, body }: PageUserEditableFields) => {
+  const timeCreated = Date.now().valueOf();
+  const dupesResponse = await sqlApi.getPagesByTime(timeCreated);
+  const dupesCount = Number(dupesResponse[0].dupes);
+  const newId = timetoid(timeCreated, dupesCount);
+  await sqlApi.addPage(newId.output.string, timeCreated, timeCreated, title, lead, body);
+  return newId.output.string;
 };
 
-export const prom_deletePage = (httpres: Response, pageid: string, dbres_cb: SqlResponseCallback<UpsertResult>) => {
-  return prom_dbConnection(httpres, (dbconn) =>
-    dbconn
-      .query('DELETE FROM pages WHERE id=?;', pageid)
-      .then(dbres_cb)
-      .then(() => dbconn)
-  );
+export const deletePage = async (pageId: string) => await sqlApi.deletePage(pageId);
+
+export const getPage = async (pageId: string) => {
+  const pageResponse = await sqlApi.getPagesById(pageId);
+  if (pageResponse.length !== 1) {
+    return;
+  }
+  return pageResponse[0] as Page;
 };
 
-export const prom_getPage = (
-  httpres: Response,
-  pageid: string,
-  dbres_cb: SqlResponseCallback<SqlSelectPagesResponse>
-) => {
-  return prom_dbConnection(httpres, (dbconn) =>
-    dbconn
-      .query('SELECT * FROM pages WHERE id=?;', pageid)
-      .then(dbres_cb)
-      .then(() => dbconn)
-  );
-};
+export const getAllPages = async () => (await sqlApi.getSortedAllPages()) as Page[];
 
-export const prom_getAllPages = (httpres: Response, dbres_cb: SqlResponseCallback<SqlSelectPagesResponse>) => {
-  return prom_dbConnection(httpres, (dbconn) =>
-    dbconn
-      .query('SELECT * FROM pages ORDER BY time DESC;')
-      .then(dbres_cb)
-      .catch((err) => {
-        debug('Error on query:', err);
-      })
-      .then(() => dbconn)
-  );
-};
-
-export const find_pages = (_content: string) => {
+export const find_pages = (_content = '') => {
   const pages = [] as Page[];
   return pages;
+};
+
+export const prettyTrim = (str: string, maxLength = 100) => {
+  return str.length < maxLength ? str : str.substring(0, maxLength - 3) + `... (${str.length} total)`;
 };
 
 export const menu_entries = {
