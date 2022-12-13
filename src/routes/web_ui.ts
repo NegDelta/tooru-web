@@ -8,8 +8,8 @@ import { prettyTrim, timeFormat } from '../utils';
 import restApi from '../rest';
 import { cfg } from '../globals';
 
-createDebug.enable('tooru:*');
-const debug = createDebug('tooru:webui');
+createDebug.enable('tooruweb:*');
+const debug = createDebug('tooruweb:routeui');
 
 const renderTime = (page: Page) =>
   ({
@@ -39,7 +39,7 @@ const setupRouter = () => {
     res.app.set('views', path.join(__dirname, '../../src/views'));
     res.app.set('view engine', 'pug');
     res.locals.main_menu_entries = menuEntries.main;
-    res.locals.url_root = cfg.path.web;
+    res.locals.url_root = cfg.appRoot;
     next();
   });
   router.use(useStatic(path.join(__dirname, '../../src/public')));

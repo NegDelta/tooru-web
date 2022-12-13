@@ -7,8 +7,8 @@ import restApi from '../rest';
 import { PageUserEditableFields } from '../types';
 import { cfg } from '../globals';
 
-createDebug.enable('tooru:*');
-const debug = createDebug('tooru:webapi');
+createDebug.enable('tooruweb:*');
+const debug = createDebug('tooruweb:routeapi');
 
 const storage = multer.memoryStorage();
 const mw_upload = multer({ storage });
@@ -22,7 +22,7 @@ const setupRouter = () => {
 
     const newId = await restApi.postNewPage(pageFields);
 
-    res.redirect(path.posix.join(cfg.path.web, '/pages/', newId, '/'));
+    res.redirect(path.posix.join(cfg.appRoot, '/pages/', newId, '/'));
   });
 
   router.post('/pages/:id([\\d-]+)/update/', async (req: Request, res: Response, _next: NextFunction) => {
@@ -31,7 +31,7 @@ const setupRouter = () => {
 
     await restApi.putPage(req.params.id, pageFields);
 
-    res.redirect(path.posix.join(cfg.path.web, '/pages/', req.params.id, '/'));
+    res.redirect(path.posix.join(cfg.appRoot, '/pages/', req.params.id, '/'));
   });
 
   router.post('/pages/:id([\\d-]+)/delete/', async (req: Request, res: Response, _next: NextFunction) => {
@@ -40,7 +40,7 @@ const setupRouter = () => {
 
     await restApi.deletePage(id);
 
-    res.redirect(cfg.path.web);
+    res.redirect(cfg.appRoot);
   });
 
   router.post('/upload/', mw_upload.single('uploadfile'), (req: Request, res: Response, _next: NextFunction) => {

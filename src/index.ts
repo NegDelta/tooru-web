@@ -8,14 +8,14 @@ import app from './app';
 import http from 'http';
 import createDebug from 'debug';
 
-createDebug.enable('tooru:*');
-const debug = createDebug('tooru:server');
+createDebug.enable('tooruweb:*');
+const debug = createDebug('tooruweb:server');
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3080');
 app.set('port', port);
 
 /**

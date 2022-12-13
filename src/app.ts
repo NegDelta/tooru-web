@@ -5,7 +5,6 @@ import logger from 'morgan';
 
 import rt_web_ui from './routes/web_ui';
 import rt_web_api from './routes/web_api';
-import rt_json_api from './routes/json_api';
 import { cfg } from './globals';
 
 // wrapper to take care to the base url problem
@@ -24,9 +23,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/web', rt_web_ui);
-app.use('/web', rt_web_api);
-app.use('/', rt_json_api);
+app.use('/', rt_web_ui);
+app.use('/', rt_web_api);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
