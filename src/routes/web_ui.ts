@@ -1,11 +1,12 @@
 // These endpoints are to be called directly from the user or web UI links, and return pages. These should be idempotent.
 
-import express, { RequestHandler } from 'express';
 import path from 'path';
-import { NextFunction, Request, Response } from 'express';
-import { cfg, getAllPages, getPage, menu_entries, prettyTrim, time_fmt } from '../logic';
-import { Page, PageRenderProps } from '../types';
 import createDebug from 'debug';
+import { static as useStatic, RequestHandler, Router, NextFunction, Request, Response } from 'express';
+import { Page, PageRenderProps } from '../types';
+import { prettyTrim, timeFormat } from '../utils';
+import restApi from '../rest';
+import { cfg } from '../globals';
 
 createDebug.enable('tooru:*');
 const debug = createDebug('tooru:webui');
@@ -13,12 +14,35 @@ const debug = createDebug('tooru:webui');
 const renderTime = (page: Page) =>
   ({
     ...page,
-    rendered_time: time_fmt(page.time),
-    rendered_edit_time: time_fmt(page.edit_time)
+    rendered_time: timeFormat(page.time),
+    rendered_edit_time: timeFormat(page.edit_time)
   } as PageRenderProps);
 
+export const menuEntries = {
+  main: [
+    { text: 'all pages', path: '.' },
+    { text: 'new page', path: 'pages/new/' },
+    { text: 'upload', path: 'upload/' },
+    { text: 'admin', path: 'admin/' }
+  ],
+  pagecoll_sub: [{ text: 'download', path: 'api/pages?dl=1' }]
+};
+
 const setupRouter = () => {
-  const router = express.Router();
+  const router = Router();
+
+  router.use((req, res, next) => {
+    debug(`Got request for ${req.url}`);
+    next();
+  });
+  router.use((req, res, next) => {
+    res.app.set('views', path.join(__dirname, '../../src/views'));
+    res.app.set('view engine', 'pug');
+    res.locals.main_menu_entries = menuEntries.main;
+    res.locals.url_root = cfg.path.web;
+    next();
+  });
+  router.use(useStatic(path.join(__dirname, '../../src/public')));
 
   const handleErrors = (routeCallback: RequestHandler) => async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -33,11 +57,11 @@ const setupRouter = () => {
   };
 
   const rtcb_getAllPages = async (_req: Request, res: Response, _next: NextFunction) => {
-    const pages = await getAllPages();
+    const pages = await restApi.getPages();
 
     res.render('allpages', {
       pages,
-      pagetype_menu_entries: menu_entries.pagecoll_sub
+      pagetype_menu_entries: menuEntries.pagecoll_sub
     });
   };
 
@@ -52,7 +76,7 @@ const setupRouter = () => {
     });
   });
 
-  const rt_page = express.Router();
+  const rt_page = Router();
 
   rt_page.get('/', async (req, res) => {
     const { page, pagetype_menu_entries } = res.locals;
@@ -76,7 +100,7 @@ const setupRouter = () => {
     async (req, res, next) => {
       const id = req.params.id;
 
-      const page = await getPage(id);
+      const page = await restApi.getPage(id);
       debug('got page:', page);
       if (!page) {
         next('route'); // pass out into 404 middleware
@@ -88,7 +112,7 @@ const setupRouter = () => {
       res.locals.pagetype_menu_entries = [
         { text: 'edit', path: path.posix.join('pages/', page.id, 'edit/') },
         { text: 'delete', path: path.posix.join('pages/', page.id, 'delete/') },
-        { text: 'download', path: path.posix.join('api/pages/', page.id, '?dl=1') }
+        { text: 'download', path: path.posix.join('/pages/', page.id, '?dl=1') }
       ];
       next();
     },

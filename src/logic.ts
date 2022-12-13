@@ -1,16 +1,11 @@
-import nconf from 'nconf';
-import { Page, PageUserEditableFields } from './types';
 import createDebug from 'debug';
 import sqlApi from './sql';
+import { Page, PageUserEditableFields } from './types';
 
 createDebug.enable('tooru:*');
 const _debug = createDebug('tooru:logic');
 
-nconf.argv().env().file({ file: 'config.json' });
-
-export const cfg = nconf.get();
-
-export const timetoid = (timeint: number, dupecount: number) => {
+export const createId = (timeint: number, dupecount: number) => {
   const timestr_nosuffix = timeint.toString();
   const timestr_dupes = timestr_nosuffix + dupecount.toString();
   const timestr_dupes_exploded = timestr_dupes.toString().split('');
@@ -50,8 +45,6 @@ export const timetoid = (timeint: number, dupecount: number) => {
   };
 };
 
-export const time_fmt = (timestr: string) => new Date(Number(timestr)).toDateString();
-
 export const updatePage = async (pageId: string, { title, lead, body }: PageUserEditableFields) => {
   const timeCreated = Date.now().valueOf();
 
@@ -62,7 +55,7 @@ export const addPage = async ({ title, lead, body }: PageUserEditableFields) => 
   const timeCreated = Date.now().valueOf();
   const dupesResponse = await sqlApi.getPagesByTime(timeCreated);
   const dupesCount = Number(dupesResponse[0].dupes);
-  const newId = timetoid(timeCreated, dupesCount);
+  const newId = createId(timeCreated, dupesCount);
   await sqlApi.addPage(newId.output.string, timeCreated, timeCreated, title, lead, body);
   return newId.output.string;
 };
@@ -79,21 +72,7 @@ export const getPage = async (pageId: string) => {
 
 export const getAllPages = async () => (await sqlApi.getSortedAllPages()) as Page[];
 
-export const find_pages = (_content = '') => {
+export const findPages = (_content = '') => {
   const pages = [] as Page[];
   return pages;
-};
-
-export const prettyTrim = (str: string, maxLength = 100) => {
-  return str.length < maxLength ? str : str.substring(0, maxLength - 3) + `... (${str.length} total)`;
-};
-
-export const menu_entries = {
-  main: [
-    { text: 'all pages', path: '.' },
-    { text: 'new page', path: 'pages/new/' },
-    { text: 'upload', path: 'upload/' },
-    { text: 'admin', path: 'admin/' }
-  ],
-  pagecoll_sub: [{ text: 'download', path: 'api/pages?dl=1' }]
 };

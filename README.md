@@ -27,15 +27,8 @@ The generated id has 3 forms:
 
 ## Immediate to-dos
 
-### Refactor
-
-- Isolate and simplify SQL layer
-- Isolate utils
-- Move web endpoints to `web/...` and rest endpoints to `/...`
-
 ### Decoupling frontend and backend
 
-- Replace logic api calls with localhost xhr
 - Fork to `tooru-web`
 
 ## Long-term to-dos

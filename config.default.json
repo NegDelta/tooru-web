@@ -1,5 +1,10 @@
 {
-  "url_root": "/",
+  "appRoot": "/",
+  "restRoot": "http://example.com/api/",
+  "route": {
+    "web": "web/",
+    "rest": "/"
+  },
   "dbpool": {
     "host": "example.com",
     "user": "db_username",

@@ -1,11 +1,11 @@
 // These endpoints are to be called directly, and do not return pages.
 
-import express, { NextFunction, Response } from 'express';
 import path from 'path';
-import { Request } from 'express';
-import { addPage, cfg, deletePage, getAllPages, getPage, timetoid, updatePage } from '../logic';
 import createDebug from 'debug';
+import { NextFunction, Response, Request, Router } from 'express';
+import { addPage, deletePage, getAllPages, getPage, createId, updatePage, findPages } from '../logic';
 import { PageUserEditableFields } from '../types';
+import { cfg } from '../globals';
 
 createDebug.enable('tooru:*');
 const debug = createDebug('tooru:jsonapi');
@@ -17,7 +17,7 @@ const set_dl = (req: Request<unknown, unknown, unknown, { dl?: string }>, res: R
 };
 
 const setupRouter = () => {
-  const router = express.Router();
+  const router = Router();
 
   router.post('/dummy/', (req: Request, res: Response, _next: NextFunction) => {
     res.json(req.body);
@@ -28,7 +28,7 @@ const setupRouter = () => {
   });
 
   router.get('/timetoid/:dupes/', (req: Request, res: Response, _next: NextFunction) => {
-    const ids = timetoid(Date.now().valueOf(), Number(req.params.dupes));
+    const ids = createId(Date.now().valueOf(), Number(req.params.dupes));
     res.json(ids.output);
   });
 
@@ -46,7 +46,7 @@ const setupRouter = () => {
 
     const newId = await addPage(pageFields);
 
-    const redirUrl = path.posix.join(cfg.url_root, '/api/pages/', newId, '/');
+    const redirUrl = path.posix.join(cfg.path.web, '/api/pages/', newId, '/');
     res.status(201).set('Location', redirUrl).end();
   });
 
@@ -83,6 +83,10 @@ const setupRouter = () => {
 
       res.status(204).end();
     });
+
+  router.post('/parse/', async (req: Request, res: Response, _next: NextFunction) => {
+    return await findPages(req.body);
+  });
 
   return router;
 };
